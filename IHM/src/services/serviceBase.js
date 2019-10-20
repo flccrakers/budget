@@ -13,35 +13,6 @@ export function getServerBasePath() {
   return currentServerBasePath;
 }
 
-
-// export function postFormData(url: string, formData: FormData, queryPayload?: any) {
-//   let finalUrl = composeUrl(url, queryPayload);
-//   return fetch(currentServerBasePath + finalUrl, {
-//     method: "POST",
-//     credentials: "include",
-//     headers: {
-//       "Accept": "application/json, text/plain, */*"
-//     },
-//     body: formData
-//   }).then(function(response) {
-//     let contentType = response.headers.get("content-type");
-//     if (contentType && contentType.includes("application/json")) {
-//       return response.json();
-//     }
-//     throw new TypeError("Oops, we haven't got JSON!");
-//   }).then((response: IJSONWrapper) => {
-//     if (response.hasOwnProperty("IsSuccess")) {
-//       // Probably a NXResultContainer
-//       if (response.IsSuccess === true) {
-//         return response.Payload;
-//       } else {
-//         throw new Error(response.GeneralException);
-//       }
-//     }
-//     else return response;
-//   }).then(convertWCFDateToJSDate);
-// }
-
 export function postJSON(url: string, bodyPayload: any, queryPayload?: any) {
   let finalUrl = composeUrl(url, queryPayload);
 

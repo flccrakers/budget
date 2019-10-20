@@ -7,8 +7,8 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import {Divider} from "@material-ui/core";
 import CloudUpload from '@material-ui/icons/CloudUpload'
+import Money from '@material-ui/icons/AttachMoney'
 import {connect} from "react-redux";
-import * as ReactDom from "react-dom";
 import {withRouter} from "react-router-dom";
 import {fetchAccountList} from "../../redux/actions/import-export-actions";
 import {withSnackbar} from "notistack";
@@ -97,7 +97,23 @@ class Home extends Component {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button style={styles.cardButton} onClick={this.uploadData}>Go to ADMIN</Button>
+              <Button style={styles.cardButton} onClick={this.uploadData}>Go toIMPORT EXPORT</Button>
+            </CardActions>
+          </Card>
+          <Card style={styles.card} onClick={this.gotToAccount}>
+            <CardContent style={styles.content}>
+              <div style={styles.cardTitle}>
+                <Money style={{color: '#177792', marginLeft: '8px', width: '50px', height: '50px'}}/>
+                <br/>
+                <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>{'ACCOUNTS'}</span>
+              </div>
+              <Divider style={styles.divider}/>
+              <Typography component="p">
+                {'Watch your accounts'}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button style={styles.cardButton} onClick={this.uploadData}>Go to ACCOUNT</Button>
             </CardActions>
           </Card>
           {/*<Card style={styles.card} onClick={this.goToOmada}>*/}
@@ -170,9 +186,6 @@ class Home extends Component {
     );
   }
 
-  goToOmada = () => {
-    this.props.history.push('/omada');
-  };
   uploadData = () => {
     // this.props.dispatch(fetchModuleData());
     this.props.dispatch(fetchAccountList(this.props.enqueueSnackbar));
@@ -180,30 +193,10 @@ class Home extends Component {
     this.props.history.push('/upload-data');
   };
 
-  goToPeople = () => {
-    this.props.history.push('/people');
-  };
-  goToMaintenance = () => {
-    // this.props.dispatch(maintenanceActions.loadRequestList(false));
-    this.props.history.push('/maintenance');
+  gotToAccount = () => {
+    this.props.history.push('/accounts');
   };
 
-  goToSignature = () => {
-    this.props.history.push('/signature');
-  };
-  goToMeetingRoom = () => {
-    this.props.history.push('/meeting-rooms');
-  };
-  goToEverwin = () => {
-    let refToButton = ReactDom.findDOMNode(this.everwinRef);
-    refToButton.click();
-  };
-
-  goToOffice = () => {
-    let refToOffice = ReactDom.findDOMNode(this.officeRef);
-    refToOffice.click();
-
-  }
 
 }
 
