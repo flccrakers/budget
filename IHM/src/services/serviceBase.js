@@ -51,8 +51,8 @@ export function postJSON(url: string, bodyPayload: any, queryPayload?: any) {
     method: "POST",
     body: data
   }).then(function (response) {
-
     let contentType = response.headers.get("content-type");
+    console.log(contentType);
     if (contentType && contentType.includes("application/json")) {
       return response.json();
     }
@@ -113,6 +113,7 @@ export function getJSON(baseUrl: string, queryPayload?: any) {
     // }
   }).then((response) => {
     const contentType = response.headers.get("content-type");
+    console.log(contentType);
     if (contentType && contentType.includes("application/json")) {
       return response.json();
     }
@@ -185,14 +186,12 @@ function showFile(blob, fileName, type) {
 }
 
 export function postFileToFlask(url: String, bodyPayload: any, queryPayload?: any) {
-  console.log('Post file to flask');
   let finalUrl = composeUrl(url, queryPayload);
   let data = new FormData();
 
   data.append('file', bodyPayload.file);
   data.append('filename', bodyPayload.file.name);
 
-  console.log(currentServerBasePath + finalUrl);
   return fetch(currentServerBasePath + finalUrl, {
     method: "POST",
     body: data,

@@ -103,6 +103,7 @@ def upload_data_form_xlsx():
         print("there is no file")
         logger.debug("There is no file")
         return jsonify(file_check_response)
+    print(request)
     file = request.files['file']
     save_file_in_uploads(file)
     json_data = importer.get_json_form_xlsx_file(file.filename)
@@ -111,6 +112,25 @@ def upload_data_form_xlsx():
         "Payload": json_data,
         "GeneralException": ''
     }
+    return jsonify(file_check_response)
+
+
+@APP.route('/update_data_for_account', methods=['POST'])
+def update_data_for_account():
+    print("I'm trying to update")
+    body_data = json.loads(request.form.get('json'))
+    account_id = body_data['accountId']
+    filename = body_data['filename']
+    account = mongo.db.accounts.find_one({"_id": ObjectId(account_id)})
+    account['data'] = importer.get_json_form_xlsx_file(filename)
+    print(account)
+    mongo.db.accounts.replace_one({'_id': ObjectId(account_id)}, account)
+    file_check_response = {
+        "IsSuccess": True,
+        "Payload": '',
+        "GeneralException": ''
+    }
+    print(jsonify(file_check_response))
     return jsonify(file_check_response)
 
 

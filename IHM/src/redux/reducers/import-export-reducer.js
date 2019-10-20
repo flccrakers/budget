@@ -18,7 +18,7 @@ export default function reducer(state = initialState.getImportExportInitialState
       return{...state, accounts:action.payload};
     case "persist/REHYDRATE": {
       if (action.payload !== undefined) {
-        return {...state, ...action.payload.account};
+        return {...state, ...action.payload.importExport};
       }
       return {...state}
     }

@@ -95,6 +95,10 @@ class UploadData extends Component {
     return (
       <div className={classes.main}>
         <div className={classes.upperPart}>
+          {this.props.fetchingAccounts === true &&
+          <CircularProgress size={50} color={"secondary"}/>
+          }
+          {this.props.fetchingAccounts === false &&
           <Select variant={"outlined"}
                   value={this.state.selectedAccount}
                   onChange={this.handleChangeAccount}
@@ -112,6 +116,7 @@ class UploadData extends Component {
               </MenuItem>
             ))}
           </Select>
+          }
           <Button
             variant={"contained"} color={"primary"}
             onClick={this.clickSelectFile}
@@ -151,7 +156,11 @@ class UploadData extends Component {
   handleResourceInputFile = event => {
     console.log(event.target.files[0].name);
     this.setState({selectedFile: event.target.files[0].name});
-    this.props.dispatch(importExportActions.uploadXLSXFile(event.target.files, this.props.enqueueSnackbar))
+    if (this.state.selectedAccount === 0) {
+      this.props.enqueueSnackbar('Select an account', {variant: 'error', autoHideDuration: 4000})
+    } else {
+      this.props.dispatch(importExportActions.uploadXLSXFile(event.target.files[0], this.state.selectedAccount, this.props.enqueueSnackbar))
+    }
 
   };
 
@@ -163,6 +172,7 @@ export default connect(store => {
     pages: store.pages,
     user: store.user,
     uploadingFile: store.importExport.uploadingFile,
+    fetchingAccounts: store.importExport.fetchingAccounts,
     accounts: store.importExport.accounts,
   };
 })(exportedUploadData);

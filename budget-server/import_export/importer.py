@@ -6,7 +6,6 @@ import xlrd  # Reading an excel file using Python
 
 def get_json_form_xlsx_file(filename):
     # print(filename)
-    print("starting import" + filename)
     directory = 'uploaded-files'
     json = []
     wb = xlrd.open_workbook(os.path.join(directory, filename))
@@ -24,7 +23,6 @@ def get_json_form_xlsx_file(filename):
                 credit = abs(amount)
             else:
                 debit = abs(amount)
-            print([date, reason, credit, debit])
-            json.append([date, reason, credit, debit])
+            json.append({'date': date, 'reason': reason, 'credit': credit, 'debit': debit})
 
     return json

@@ -8,12 +8,14 @@ export function uploadXLSXFile(files) {
     let file = files[i];
     query.push(serviceBase.postFileToFlask('/upload_data_from_xlsx', {file}, {}))
   }
-
   return Promise.all(query);
 }
 
-
 export function getAccountList() {
   return serviceBase.getJSON('/get_account_list', {});
+}
+
+export function updateDataInDatabase(filename, accountId) {
+  return serviceBase.postJSON('/update_data_for_account', {'filename': filename, 'accountId': accountId});
 }
 
