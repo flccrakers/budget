@@ -3,14 +3,17 @@
 import datetime
 import json
 import logging.handlers
-
+from werkzeug.utils import secure_filename
+from os.path import join, dirname, realpath, splitext
 from bson import ObjectId
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from flask_pymongo import PyMongo
+from errors import errors
 
 DEBUG_APP = True
 APP = Flask(__name__)
+APP.config['UPLOAD_FOLDER'] = 'uploaded-files'
 APP.config["MONGO_URI"] = "mongodb://localhost/budgetdb"
 mongo = PyMongo(APP)
 CORS(APP)
@@ -65,6 +68,39 @@ def get_account_list():
     json_response = {"IsSuccess": True, "Message": '', "ErrorType": '', "GeneralException": '',
                      "Payload": account_list}
     return jsonify(json_response)
+
+
+def save_file_in_uploads(file):
+    filename = secure_filename(file.filename)
+    directory = join(dirname(realpath(__file__)), APP.config['UPLOAD_FOLDER'])
+    target = join(directory, filename)
+    logger.info("saving " + str(target))
+    file.save(target)
+
+
+@APP.route('/upload_data_from_xlsx', methods=['POST'])
+def upload_data_form_xlsx():
+    file_check_response = {
+        "IsSuccess": False,
+        "Payload": [{
+            "ErrorCode": "NO_FILE",
+            "Message": errors.get_errors_from_code('NO_FILE', 'en-us', logger),
+            "Type": 'error'
+        }],
+        "GeneralException": 'NO_FILE'
+    }
+    if 'file' not in request.files:
+        print("there is no file")
+        logger.debug("There is no file")
+        return jsonify(file_check_response)
+    file = request.files['file']
+    save_file_in_uploads(file)
+    file_check_response = {
+        "IsSuccess": True,
+        "Payload": [],
+        "GeneralException": ''
+    }
+    return jsonify(file_check_response)
 
 
 @APP.route('/get_account_data/<account_id>')

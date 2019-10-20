@@ -9,7 +9,7 @@ import {Divider} from "@material-ui/core";
 import People from '@material-ui/icons/People';
 import Gesture from '@material-ui/icons/Gesture';
 import Build from '@material-ui/icons/Build';
-import Admin from '@material-ui/icons/VerifiedUser';
+import CloudUpload from '@material-ui/icons/CloudUpload'
 import {connect} from "react-redux";
 import * as ReactDom from "react-dom";
 import {withRouter} from "react-router-dom";
@@ -85,86 +85,85 @@ class Home extends Component {
     return (
       <div style={styles.main}>
         <div style={styles.upperPart}>
-
-          <Card style={styles.card} onClick={this.gotToAdmin}>
+          <Card style={styles.card} onClick={this.uploadData}>
             <CardContent style={styles.content}>
               <div style={styles.cardTitle}>
-                <Admin style={{color: '#f50057', marginLeft: '8px', width: '50px', height: '50px'}}/>
+                <CloudUpload style={{color: '#177792', marginLeft: '8px', width: '50px', height: '50px'}}/>
                 <br/>
-                <span style={{color: '#f50057', fontWeight: 'bold', marginLeft: '1px'}}>{'ADMIN'}</span>
+                <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>{'UPLOAD DATA'}</span>
               </div>
               <Divider style={styles.divider}/>
               <Typography component="p">
-                {'Manage NovAliX INTRANET'}
+                {'Upload data from bank'}
               </Typography>
             </CardContent>
             <CardActions>
-              <Button style={styles.cardButton} onClick={this.gotToAdmin}>Go to ADMIN</Button>
+              <Button style={styles.cardButton} onClick={this.uploadData}>Go to ADMIN</Button>
             </CardActions>
           </Card>
-          <Card style={styles.card} onClick={this.goToOmada}>
-            <CardContent style={styles.content}>
-              <div style={styles.cardTitle}>
-                <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>{'OMADA'}</span>
-              </div>
-              <Divider style={styles.divider}/>
-              <Typography component="p">
-                {'Access to the whole data of NovAliX. Import data and make reports'}
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button style={styles.cardButton} onClick={this.goToOmada}>Go to OMADA</Button>
-            </CardActions>
-          </Card>
-          <Card style={styles.card} onClick={this.goToPeople}>
-            <CardContent style={styles.content}>
-              <div style={styles.cardTitle}>
-                <People style={{color: '#177792', width: '50px', height: '50px'}}/>
-                <br/>
-                <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>PEOPLE</span>
-              </div>
-              <Divider style={styles.divider}/>
-              <Typography component="p">
-                {'Request for New User Account / or Account Extension'}
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button style={styles.cardButton} onClick={this.goToPeople}>Go to PEOPLE</Button>
-            </CardActions>
-          </Card>
-          <Card style={styles.card} onClick={this.goToMaintenance}>
-            <CardContent style={styles.content}>
-              <div style={styles.cardTitle}>
-                <Build style={{color: '#177792', width: '50px', height: '50px'}}/>
-                <br/>
-                <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px', textAlign: 'center'}}>MAINTENANCE MANAGEMENT</span>
-              </div>
-              <Divider style={styles.divider}/>
-              <Typography component="p">
-                {'Request for New User Account / or Account Extension'}
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button style={styles.cardButton} onClick={this.goToMaintenance}>got to
-                MAINTENANCE</Button>
-            </CardActions>
-          </Card>
-          <Card style={styles.card} onClick={this.goToSignature}>
-            <CardContent style={styles.content}>
-              <div style={styles.cardTitle}>
-                <Gesture style={{color: '#177792', width: '50px', height: '50px'}}/>
-                <br/>
-                <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>GENERATE SIGNATURE</span>
-              </div>
-              <Divider style={styles.divider}/>
-              <Typography component="p">
-                {"Generate your signature, in accordance with the NovAliX's graphic charter"}
-              </Typography>
-            </CardContent>
-            <CardActions>
-              <Button style={styles.cardButton} onClick={this.goToSignature}>Go to SIGNATURE</Button>
-            </CardActions>
-          </Card>
+          {/*<Card style={styles.card} onClick={this.goToOmada}>*/}
+          {/*  <CardContent style={styles.content}>*/}
+          {/*    <div style={styles.cardTitle}>*/}
+          {/*      <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>{'OMADA'}</span>*/}
+          {/*    </div>*/}
+          {/*    <Divider style={styles.divider}/>*/}
+          {/*    <Typography component="p">*/}
+          {/*      {'Access to the whole data of NovAliX. Import data and make reports'}*/}
+          {/*    </Typography>*/}
+          {/*  </CardContent>*/}
+          {/*  <CardActions>*/}
+          {/*    <Button style={styles.cardButton} onClick={this.goToOmada}>Go to OMADA</Button>*/}
+          {/*  </CardActions>*/}
+          {/*</Card>*/}
+          {/*<Card style={styles.card} onClick={this.goToPeople}>*/}
+          {/*  <CardContent style={styles.content}>*/}
+          {/*    <div style={styles.cardTitle}>*/}
+          {/*      <People style={{color: '#177792', width: '50px', height: '50px'}}/>*/}
+          {/*      <br/>*/}
+          {/*      <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>PEOPLE</span>*/}
+          {/*    </div>*/}
+          {/*    <Divider style={styles.divider}/>*/}
+          {/*    <Typography component="p">*/}
+          {/*      {'Request for New User Account / or Account Extension'}*/}
+          {/*    </Typography>*/}
+          {/*  </CardContent>*/}
+          {/*  <CardActions>*/}
+          {/*    <Button style={styles.cardButton} onClick={this.goToPeople}>Go to PEOPLE</Button>*/}
+          {/*  </CardActions>*/}
+          {/*</Card>*/}
+          {/*<Card style={styles.card} onClick={this.goToMaintenance}>*/}
+          {/*  <CardContent style={styles.content}>*/}
+          {/*    <div style={styles.cardTitle}>*/}
+          {/*      <Build style={{color: '#177792', width: '50px', height: '50px'}}/>*/}
+          {/*      <br/>*/}
+          {/*      <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px', textAlign: 'center'}}>MAINTENANCE MANAGEMENT</span>*/}
+          {/*    </div>*/}
+          {/*    <Divider style={styles.divider}/>*/}
+          {/*    <Typography component="p">*/}
+          {/*      {'Request for New User Account / or Account Extension'}*/}
+          {/*    </Typography>*/}
+          {/*  </CardContent>*/}
+          {/*  <CardActions>*/}
+          {/*    <Button style={styles.cardButton} onClick={this.goToMaintenance}>got to*/}
+          {/*      MAINTENANCE</Button>*/}
+          {/*  </CardActions>*/}
+          {/*</Card>*/}
+          {/*<Card style={styles.card} onClick={this.goToSignature}>*/}
+          {/*  <CardContent style={styles.content}>*/}
+          {/*    <div style={styles.cardTitle}>*/}
+          {/*      <Gesture style={{color: '#177792', width: '50px', height: '50px'}}/>*/}
+          {/*      <br/>*/}
+          {/*      <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>GENERATE SIGNATURE</span>*/}
+          {/*    </div>*/}
+          {/*    <Divider style={styles.divider}/>*/}
+          {/*    <Typography component="p">*/}
+          {/*      {"Generate your signature, in accordance with the NovAliX's graphic charter"}*/}
+          {/*    </Typography>*/}
+          {/*  </CardContent>*/}
+          {/*  <CardActions>*/}
+          {/*    <Button style={styles.cardButton} onClick={this.goToSignature}>Go to SIGNATURE</Button>*/}
+          {/*  </CardActions>*/}
+          {/*</Card>*/}
 
         </div>
 
@@ -175,9 +174,10 @@ class Home extends Component {
   goToOmada = () => {
     this.props.history.push('/omada');
   };
-  gotToAdmin = () => {
+  uploadData = () => {
     // this.props.dispatch(fetchModuleData());
-    this.props.history.push('/admin');
+    console.log("Should upload data")
+    this.props.history.push('/upload-data');
   };
 
   goToPeople = () => {
