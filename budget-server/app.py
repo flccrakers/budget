@@ -9,7 +9,10 @@ from bson import ObjectId
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from flask_pymongo import PyMongo
+
+from common.mongo_utils import convert_object_id_and_date_in_string
 from errors import errors
+from import_export import importer
 
 DEBUG_APP = True
 APP = Flask(__name__)
@@ -61,13 +64,20 @@ def add_account(name):
     print(name)
 
 
-@APP.route('/get_account_list/')
+@APP.route('/get_account_list/', methods=['GET'])
 def get_account_list():
-    account_list = mongo.db.accounts_list.find()
-    print(account_list)
-    json_response = {"IsSuccess": True, "Message": '', "ErrorType": '', "GeneralException": '',
-                     "Payload": account_list}
-    return jsonify(json_response)
+    print("try to get accounts")
+    account_data = []
+    try:
+        account_list = mongo.db.accounts.find({})
+        for account in account_list:
+            account_data.append(convert_object_id_and_date_in_string(account))
+        json_response = {"IsSuccess": True, "Message": '', "ErrorType": '', "GeneralException": '',
+                         "Payload": account_data}
+        return jsonify(json_response)
+    except errors:
+        print(errors)
+        return errors
 
 
 def save_file_in_uploads(file):
@@ -93,13 +103,34 @@ def upload_data_form_xlsx():
         print("there is no file")
         logger.debug("There is no file")
         return jsonify(file_check_response)
+    print(request)
     file = request.files['file']
     save_file_in_uploads(file)
+    json_data = importer.get_json_form_xlsx_file(file.filename)
     file_check_response = {
         "IsSuccess": True,
-        "Payload": [],
+        "Payload": json_data,
         "GeneralException": ''
     }
+    return jsonify(file_check_response)
+
+
+@APP.route('/update_data_for_account', methods=['POST'])
+def update_data_for_account():
+    print("I'm trying to update")
+    body_data = json.loads(request.form.get('json'))
+    account_id = body_data['accountId']
+    filename = body_data['filename']
+    account = mongo.db.accounts.find_one({"_id": ObjectId(account_id)})
+    account['data'] = importer.get_json_form_xlsx_file(filename)
+    print(account)
+    mongo.db.accounts.replace_one({'_id': ObjectId(account_id)}, account)
+    file_check_response = {
+        "IsSuccess": True,
+        "Payload": '',
+        "GeneralException": ''
+    }
+    print(jsonify(file_check_response))
     return jsonify(file_check_response)
 
 

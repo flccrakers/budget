@@ -1,6 +1,8 @@
 export function getImportExportInitialState() {
   return {
     uploadingFile: false,
-    errorUploadingFile: {}
+    errorUploadingFile: {},
+    accounts:[],
+    fetchingAccounts:false,
   };
 }

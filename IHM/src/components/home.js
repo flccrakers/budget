@@ -2,14 +2,9 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import Header from "./header";
 import Footer from "./footer";
-// import Omada from "./omada/main-omada";
-// import Signature from "./signature/main-signature";
-// import People from './peoples/main-people';
 import HomePanel from "./home/home-panel";
-// import Maintenance from "./maintenance/main-maintenance";
-// import NotAllowed from "./not-allowed";
 import UploadData from "./importExport/upload-data";
-// import MeetingRooms from "./meetingRooms/main-meeting-rooms";
+import Accounts from "./accounts/accounts";
 import {withRouter} from "react-router-dom";
 
 
@@ -67,6 +62,9 @@ class Home extends Component {
     switch (this.props.history.location.pathname) {
       case '/upload-data': {
          return <UploadData/>
+      }
+      case '/accounts':{
+        return <Accounts/>
       }
       // case '/omada': {
       //   return allowance.includes('omada') === true ? <Omada/> : <NotAllowed/>

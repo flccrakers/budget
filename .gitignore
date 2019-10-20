@@ -8,7 +8,7 @@ IHM/node_modules/
 IHM/package-lock.json
 # testing
 /coverage
-
+__init__.py
 # production
 /build
 

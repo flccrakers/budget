@@ -4,9 +4,10 @@ import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {withStyles} from '@material-ui/core/styles';
 import Button from "@material-ui/core/Button";
-import {CircularProgress, Typography} from "@material-ui/core";
+import {CircularProgress, Select, Typography} from "@material-ui/core";
 import * as importExportActions from "../../redux/actions/import-export-actions";
 import {withSnackbar} from "notistack";
+import MenuItem from "@material-ui/core/MenuItem";
 // import MeetingRoom from "../../styles/svg-icons/meeting-room";
 
 
@@ -72,7 +73,8 @@ class UploadData extends Component {
     super(props);
     this.resourceUploadInputRef = undefined;
     this.state = {
-      selectedFile: ''
+      selectedFile: '',
+      selectedAccount: 0
     }
   }
 
@@ -88,9 +90,33 @@ class UploadData extends Component {
   getContent() {
     const {classes} = this.props;
     console.log("content of upload");
+    let accounts = [{'name': '- Select an account -', 'id': '0'}].concat(this.props.accounts);
+    console.log(accounts);
     return (
       <div className={classes.main}>
         <div className={classes.upperPart}>
+          {this.props.fetchingAccounts === true &&
+          <CircularProgress size={50} color={"secondary"}/>
+          }
+          {this.props.fetchingAccounts === false &&
+          <Select variant={"outlined"}
+                  value={this.state.selectedAccount}
+                  onChange={this.handleChangeAccount}
+          >
+            {accounts.map((account, index) => (
+              <MenuItem
+                key={account.id}
+                value={account.id}
+              >
+                <div>
+                  {index === 0 && <em>{account.name}</em>}
+                  {index > 0 && account.name + ' (' + account.id + ')'}
+                </div>
+
+              </MenuItem>
+            ))}
+          </Select>
+          }
           <Button
             variant={"contained"} color={"primary"}
             onClick={this.clickSelectFile}
@@ -98,7 +124,7 @@ class UploadData extends Component {
             Upload data from xlsx file
           </Button>
           {this.props.uploadingFile === true &&
-            <CircularProgress size={50} color={"secondary"} className={classes.fileName}/>
+          <CircularProgress size={50} color={"secondary"} className={classes.fileName}/>
           }
           <Typography variant={"h6"} className={classes.fileName}>
             {this.state.selectedFile === '' ? 'Choose a file' : this.state.selectedFile}
@@ -119,6 +145,9 @@ class UploadData extends Component {
     );
   }
 
+  handleChangeAccount = event => {
+    this.setState({selectedAccount: event.target.value})
+  };
   clickSelectFile = event => {
     this.setState({selectedFile: ''});
     this.resourceUploadInputRef.value = '';
@@ -127,7 +156,11 @@ class UploadData extends Component {
   handleResourceInputFile = event => {
     console.log(event.target.files[0].name);
     this.setState({selectedFile: event.target.files[0].name});
-    this.props.dispatch(importExportActions.uploadXLSXFile(event.target.files, this.props.enqueueSnackbar))
+    if (this.state.selectedAccount === 0) {
+      this.props.enqueueSnackbar('Select an account', {variant: 'error', autoHideDuration: 4000})
+    } else {
+      this.props.dispatch(importExportActions.uploadXLSXFile(event.target.files[0], this.state.selectedAccount, this.props.enqueueSnackbar))
+    }
 
   };
 
@@ -138,6 +171,8 @@ export default connect(store => {
   return {
     pages: store.pages,
     user: store.user,
-    uploadingFile:store.importExport.uploadingFile,
+    uploadingFile: store.importExport.uploadingFile,
+    fetchingAccounts: store.importExport.fetchingAccounts,
+    accounts: store.importExport.accounts,
   };
 })(exportedUploadData);

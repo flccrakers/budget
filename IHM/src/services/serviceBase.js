@@ -13,35 +13,6 @@ export function getServerBasePath() {
   return currentServerBasePath;
 }
 
-
-// export function postFormData(url: string, formData: FormData, queryPayload?: any) {
-//   let finalUrl = composeUrl(url, queryPayload);
-//   return fetch(currentServerBasePath + finalUrl, {
-//     method: "POST",
-//     credentials: "include",
-//     headers: {
-//       "Accept": "application/json, text/plain, */*"
-//     },
-//     body: formData
-//   }).then(function(response) {
-//     let contentType = response.headers.get("content-type");
-//     if (contentType && contentType.includes("application/json")) {
-//       return response.json();
-//     }
-//     throw new TypeError("Oops, we haven't got JSON!");
-//   }).then((response: IJSONWrapper) => {
-//     if (response.hasOwnProperty("IsSuccess")) {
-//       // Probably a NXResultContainer
-//       if (response.IsSuccess === true) {
-//         return response.Payload;
-//       } else {
-//         throw new Error(response.GeneralException);
-//       }
-//     }
-//     else return response;
-//   }).then(convertWCFDateToJSDate);
-// }
-
 export function postJSON(url: string, bodyPayload: any, queryPayload?: any) {
   let finalUrl = composeUrl(url, queryPayload);
 
@@ -51,8 +22,8 @@ export function postJSON(url: string, bodyPayload: any, queryPayload?: any) {
     method: "POST",
     body: data
   }).then(function (response) {
-
     let contentType = response.headers.get("content-type");
+    console.log(contentType);
     if (contentType && contentType.includes("application/json")) {
       return response.json();
     }
@@ -107,12 +78,13 @@ export function getJSON(baseUrl: string, queryPayload?: any) {
   let finalUrl = composeUrl(baseUrl, queryPayload);
   return fetch(currentServerBasePath + finalUrl, {
     method: "GET",
-    headers: {
-      "Accept": "application/json, text/plain, *//*",
-      "Content-Type": "application/json"
-    }
+    // headers: {
+    //   "Accept": "application/json, text/plain, *//*",
+    //   "Content-Type": "application/json"
+    // }
   }).then((response) => {
     const contentType = response.headers.get("content-type");
+    console.log(contentType);
     if (contentType && contentType.includes("application/json")) {
       return response.json();
     }
@@ -185,14 +157,12 @@ function showFile(blob, fileName, type) {
 }
 
 export function postFileToFlask(url: String, bodyPayload: any, queryPayload?: any) {
-  console.log('Post file to flask');
   let finalUrl = composeUrl(url, queryPayload);
   let data = new FormData();
 
   data.append('file', bodyPayload.file);
   data.append('filename', bodyPayload.file.name);
 
-  console.log(currentServerBasePath + finalUrl);
   return fetch(currentServerBasePath + finalUrl, {
     method: "POST",
     body: data,
