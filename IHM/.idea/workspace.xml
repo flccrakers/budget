@@ -2,8 +2,30 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c2fd9c4a-4465-4c91-8973-b16f1c6d4151" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../budget-server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../budget-server/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/home/home-panel.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/home-panel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/importExport/upload-data.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/importExport/upload-data.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/actions/import-export-actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/actions/import-export-actions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/initialState.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/initialState.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/reducers/import-export-reducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/reducers/import-export-reducer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/importExportServices.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/importExportServices.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/serviceBase.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/serviceBase.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/.idea/budget-server.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/.idea/dictionaries/hoonakker.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/database-utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/errors/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/errors/error_codes.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/errors/errors.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/flask-budget.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/locales/en-us.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/translation/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../budget-server/translation/translator.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -83,7 +105,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571587226008</updated>
-      <workItem from="1571587227755" duration="10785000" />
+      <workItem from="1571587227755" duration="12111000" />
     </task>
     <servers />
   </component>

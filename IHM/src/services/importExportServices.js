@@ -12,3 +12,8 @@ export function uploadXLSXFile(files) {
   return Promise.all(query);
 }
 
+
+export function getAccountList() {
+  return serviceBase.getJSON('/get_account_list', {});
+}
+

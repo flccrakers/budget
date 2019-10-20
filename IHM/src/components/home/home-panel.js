@@ -6,13 +6,12 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import {Divider} from "@material-ui/core";
-import People from '@material-ui/icons/People';
-import Gesture from '@material-ui/icons/Gesture';
-import Build from '@material-ui/icons/Build';
 import CloudUpload from '@material-ui/icons/CloudUpload'
 import {connect} from "react-redux";
 import * as ReactDom from "react-dom";
 import {withRouter} from "react-router-dom";
+import {fetchAccountList} from "../../redux/actions/import-export-actions";
+import {withSnackbar} from "notistack";
 // import MeetingRoom from "../../styles/svg-icons/meeting-room";
 
 
@@ -176,7 +175,8 @@ class Home extends Component {
   };
   uploadData = () => {
     // this.props.dispatch(fetchModuleData());
-    console.log("Should upload data")
+    this.props.dispatch(fetchAccountList(this.props.enqueueSnackbar));
+    console.log("Should upload data");
     this.props.history.push('/upload-data');
   };
 
@@ -207,7 +207,7 @@ class Home extends Component {
 
 }
 
-const routedHome = withRouter(Home);
+const routedHome = withRouter(withSnackbar(Home));
 export default connect(store => {
   return {
     pages: store.pages,

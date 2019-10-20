@@ -10,7 +10,15 @@ export function uploadXLSXFile(file, enqueuedSnackbar) {
     }).catch(error=>{
       dispatch({type: 'UPLOADING_FILE_ERROR', payload:'error'})
     })
-
   }
+}
 
+export function fetchAccountList(enqueuedSnackbar){
+  return function (dispatch){
+    dispatch({type:'FETCHING_ACCOUNT_LIST'});
+    importExportService.getAccountList().then(accounts=>{
+      dispatch({type:'FETCHING_ACCOUNT_LIST_DONE'});
+      dispatch({type:'UPDATE_ACCOUNT_LIST', payload: accounts});
+    }).catch(error=>{console.error(error)});
+  }
 }

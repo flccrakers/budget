@@ -107,10 +107,10 @@ export function getJSON(baseUrl: string, queryPayload?: any) {
   let finalUrl = composeUrl(baseUrl, queryPayload);
   return fetch(currentServerBasePath + finalUrl, {
     method: "GET",
-    headers: {
-      "Accept": "application/json, text/plain, *//*",
-      "Content-Type": "application/json"
-    }
+    // headers: {
+    //   "Accept": "application/json, text/plain, *//*",
+    //   "Content-Type": "application/json"
+    // }
   }).then((response) => {
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
