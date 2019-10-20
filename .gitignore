@@ -18,6 +18,8 @@ IHM/package-lock.json
 .env.development.local
 .env.test.local
 .env.production.local
+.cpython-36.pyc
+.idea/
 
 npm-debug.log*
 yarn-debug.log*
@@ -25,4 +27,17 @@ yarn-error.log*
 
 #updload files
 budget-server/uploaded-files/
+__pycache__/
+*.py[cod]
+resources/
 
+build/
+node_modules/
+.idea/
+venv/
+*.log*
+uploads/
+
+
+tsconfig.json
+*lock.json
