@@ -8,9 +8,9 @@ import Footer from "./footer";
 import HomePanel from "./home/home-panel";
 // import Maintenance from "./maintenance/main-maintenance";
 // import NotAllowed from "./not-allowed";
-// import Admin from "./admin/main-admin";
+import UploadData from "./importExport/upload-data";
 // import MeetingRooms from "./meetingRooms/main-meeting-rooms";
-import {Redirect, withRouter} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 
 
 const styles = {
@@ -36,7 +36,7 @@ class Home extends Component {
       <div style={styles.rootContent}>
         {this.getHeader()}
         <div style={styles.middle} id={'middle-div'}>
-          THIS IS HOME
+         {this.getMiddleContent()}
         </div>
         <Footer/>
       </div>
@@ -62,11 +62,12 @@ class Home extends Component {
 
   getMiddleContent() {
 
-    let allowance = this.props.user.user.allowance;
+    // let allowance = this.props.user.user.allowance;
+    console.log(this.props.history.location.pathname);
     switch (this.props.history.location.pathname) {
-      // case '/admin': {
-      //   return allowance.includes('admin') === true ? <Admin/> : <NotAllowed/>
-      // }
+      case '/upload-data': {
+         return <UploadData/>
+      }
       // case '/omada': {
       //   return allowance.includes('omada') === true ? <Omada/> : <NotAllowed/>
       // }

@@ -46,7 +46,7 @@ class Footer extends Component {
   }
 
   generateAutomaticLogout() {
-    let guid = this.props.user.user.guid;
+    // let guid = this.props.user.user.guid;
     // this.props.dispatch(userActions.logout(guid));
     // this.props.dispatch(dialogActions.updateDialogAndShow(dialogType.AUTOMATIC_LOGOUT));
   }

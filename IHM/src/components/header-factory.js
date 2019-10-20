@@ -113,7 +113,7 @@ class HeaderFactory extends Component {
     // });
 
     // return module === undefined ? title.toUpperCase() : module.title.toUpperCase();
-    return this.props.pathname.toUpperCase()
+    return title.toUpperCase()
   }
 
   handleClose = () => {
@@ -126,7 +126,7 @@ class HeaderFactory extends Component {
   };
 
   logout = () => {
-    let guid = this.props.user.user.guid;
+    // let guid = this.props.user.user.guid;
     // this.props.dispatch(userActions.logout(guid));
     this.props.history.push('/login');
   };
