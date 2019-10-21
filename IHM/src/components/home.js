@@ -5,6 +5,7 @@ import Footer from "./footer";
 import HomePanel from "./home/home-panel";
 import UploadData from "./importExport/upload-data";
 import Accounts from "./accounts/accounts";
+import Budgets from "./budget/budgets"
 import {withRouter} from "react-router-dom";
 
 
@@ -65,6 +66,9 @@ class Home extends Component {
       }
       case '/accounts':{
         return <Accounts/>
+      }
+      case '/budgets':{
+        return <Budgets/>
       }
       // case '/omada': {
       //   return allowance.includes('omada') === true ? <Omada/> : <NotAllowed/>
