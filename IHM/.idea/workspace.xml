@@ -4,6 +4,8 @@
     <list default="true" id="c2fd9c4a-4465-4c91-8973-b16f1c6d4151" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/accounts/accounts.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/accounts/accounts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/initialState.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/initialState.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/reducers/account-reducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/reducers/account-reducer.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,7 +42,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/components/accounts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/services" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -54,11 +56,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/components/accounts" />
       <recent name="$PROJECT_DIR$/src/services" />
+      <recent name="$PROJECT_DIR$/src/redux/actions" />
+      <recent name="$PROJECT_DIR$/src/components/accounts" />
       <recent name="$PROJECT_DIR$/src/redux/reducers" />
       <recent name="$PROJECT_DIR$/src/components/import-export" />
-      <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -83,7 +85,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571587226008</updated>
-      <workItem from="1571587227755" duration="18929000" />
+      <workItem from="1571587227755" duration="19529000" />
+      <workItem from="1571643146685" duration="5840000" />
     </task>
     <servers />
   </component>
@@ -95,7 +98,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

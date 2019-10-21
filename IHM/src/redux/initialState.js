@@ -6,3 +6,11 @@ export function getImportExportInitialState() {
     fetchingAccounts:false,
   };
 }
+
+export function getAccountInitialState(){
+  return{
+    loadingAccountData:false,
+    currentAccountData:[],
+  }
+
+}

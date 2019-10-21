@@ -3,6 +3,8 @@
 import datetime
 import json
 import logging.handlers
+import time
+
 from werkzeug.utils import secure_filename
 from os.path import join, dirname, realpath, splitext
 from bson import ObjectId
@@ -134,17 +136,25 @@ def update_data_for_account():
     return jsonify(file_check_response)
 
 
-@APP.route('/get_account_data/<account_id>')
+@APP.route('/get_account_data', methods=['POST'])
 def get_account_data(account_id=None):
-    tango = mongo.db.tangos.find_one({"_id": ObjectId(account_id)})
-    try:
-        print(tango['path'])
-        return send_file(tango['path'])
-    except Exception as e:
-        print(str(e))
-        json_response = {"IsSuccess": False, "Message": '', "ErrorType": '', "GeneralException": str(e),
-                         "Payload": None}
-        return jsonify(json_response)
+    body_data = json.loads(request.form.get('json'))
+    account_id = body_data['accountId']
+    year = body_data['year']
+    month = body_data['month']
+    # print(account_id, year, month)
+    account_data = mongo.db.accounts.find_one({"_id": ObjectId(account_id)})
+    returned_data = []
+    for data in account_data['data']:
+        current_date = datetime.datetime.strptime(data['date'], "%Y-%m-%d").date()
+        if current_date.year == year and current_date.month == month:
+            data['date'] = time.mktime(current_date.timetuple())
+            returned_data.append(data)
+
+    # print(returned_data)
+    json_response = {"IsSuccess": True, "Message": '', "ErrorType": '', "GeneralException": '',
+                     "Payload": returned_data}
+    return jsonify(json_response)
 
 
 if __name__ == '__main__':
