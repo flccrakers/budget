@@ -3,11 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="c2fd9c4a-4465-4c91-8973-b16f1c6d4151" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/accounts/accountTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/accounts/accountTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/budget/budgets.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/budget/budgets.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/home/home-panel.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/home/home-panel.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/redux/initialState.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/initialState.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/redux/reducers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/reducers/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/redux/actions/account-actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/actions/account-actions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/serviceBase.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/serviceBase.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

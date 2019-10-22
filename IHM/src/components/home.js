@@ -57,9 +57,6 @@ class Home extends Component {
   }
 
   getMiddleContent() {
-
-    // let allowance = this.props.user.user.allowance;
-    console.log(this.props.history.location.pathname);
     switch (this.props.history.location.pathname) {
       case '/upload-data': {
          return <UploadData/>

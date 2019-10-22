@@ -23,7 +23,6 @@ export function postJSON(url: string, bodyPayload: any, queryPayload?: any) {
     body: data
   }).then(function (response) {
     let contentType = response.headers.get("content-type");
-    console.log(contentType);
     if (contentType && contentType.includes("application/json")) {
       return response.json();
     }
@@ -78,13 +77,8 @@ export function getJSON(baseUrl: string, queryPayload?: any) {
   let finalUrl = composeUrl(baseUrl, queryPayload);
   return fetch(currentServerBasePath + finalUrl, {
     method: "GET",
-    // headers: {
-    //   "Accept": "application/json, text/plain, *//*",
-    //   "Content-Type": "application/json"
-    // }
   }).then((response) => {
     const contentType = response.headers.get("content-type");
-    console.log(contentType);
     if (contentType && contentType.includes("application/json")) {
       return response.json();
     }
@@ -103,29 +97,6 @@ export function getJSON(baseUrl: string, queryPayload?: any) {
 }
 
 
-// export function downloadFile(absoluteUrl: string): Promise {
-//   /** ATM, the promise resolution does not work in Chrome, maybe in FF though **/
-//   return new Promise((resolve, reject) => {
-//     let iFrame = document.createElement("iframe");
-//     iFrame.style.display = "none";
-//     document.body.appendChild(iFrame);
-//     if (navigator.userAgent.indexOf("MSIE") > -1) {
-//       iFrame.onreadystatechange = function () {
-//         if (iFrame.readyState === "complete") {
-// // console.log("removing iframe");
-//           document.body.removeChild(iFrame);
-//           resolve();
-//         }
-//       };
-//     } else {
-//       iFrame.onload = function () {
-//         document.body.removeChild(iFrame);
-//         resolve();
-//       };
-//     }
-//     iFrame.src = absoluteUrl;
-//   });
-// }
 
 function showFile(blob, fileName, type) {
   // It is necessary to create a new blob object with mime-type explicitly set

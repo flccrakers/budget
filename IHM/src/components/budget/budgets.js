@@ -93,7 +93,6 @@ class UploadData extends Component {
 
   componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
     if (prevProps.currentBudget !== this.props.currentBudget) {
-      console.log("Budget has change");
       this.setState({budgetItems: this.props.currentBudget})
     }
   }

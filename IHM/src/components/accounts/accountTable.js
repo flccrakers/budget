@@ -133,7 +133,6 @@ class AccountTable extends Component {
   getContent() {
     const {classes} = this.props;
     const {dense, order, orderBy, selected} = this.state;
-    console.log(orderBy);
     return (
       <Table
         className={classes.table}
@@ -166,12 +165,6 @@ class AccountTable extends Component {
                   key={row.date + "_" + index}
                   selected={isItemSelected}
                 >
-                  {/*<TableCell padding="checkbox">*/}
-                  {/*  <Checkbox*/}
-                  {/*    checked={isItemSelected}*/}
-                  {/*    inputProps={{'aria-labelledby': labelId}}*/}
-                  {/*  />*/}
-                  {/*</TableCell>*/}
                   <TableCell align="right">{new Date(row.date * 1000).toLocaleDateString()}</TableCell>
                   <TableCell align="left" className={classes.reason}>{row.reason}</TableCell>
                   <TableCell align="right">{row.credit === '' ? '' : Number(row.credit).toFixed(2)}</TableCell>
