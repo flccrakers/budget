@@ -12,7 +12,10 @@ def convert_object_id_and_date_in_string(data):
     returned_data = {}
     for key in data:
         if isinstance(data[key], ObjectId):
-            returned_data['id'] = str(data[key])
+            if key == '_id':
+                returned_data['id'] = str(data[key])
+            else:
+                returned_data[key] = str(data[key])
         elif isinstance(data[key], datetime.datetime):
             returned_data[key] = str(data[key])
         else:

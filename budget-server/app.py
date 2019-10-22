@@ -137,23 +137,50 @@ def update_data_for_account():
 
 
 @APP.route('/get_account_data', methods=['POST'])
-def get_account_data(account_id=None):
+def get_account_data():
     body_data = json.loads(request.form.get('json'))
     account_id = body_data['accountId']
     year = body_data['year']
     month = body_data['month']
-    # print(account_id, year, month)
+    print(account_id, year, month)
     account_data = mongo.db.accounts.find_one({"_id": ObjectId(account_id)})
+    print(account_data)
     returned_data = []
-    for data in account_data['data']:
-        current_date = datetime.datetime.strptime(data['date'], "%Y-%m-%d").date()
-        if current_date.year == year and current_date.month == month:
-            data['date'] = time.mktime(current_date.timetuple())
-            returned_data.append(data)
+    if account_data is not None:
+        for data in account_data['data']:
+            current_date = datetime.datetime.strptime(data['date'], "%Y-%m-%d").date()
+            if current_date.year == year and current_date.month == month:
+                data['date'] = time.mktime(current_date.timetuple())
+                returned_data.append(data)
 
     # print(returned_data)
     json_response = {"IsSuccess": True, "Message": '', "ErrorType": '', "GeneralException": '',
                      "Payload": returned_data}
+    return jsonify(json_response)
+
+
+@APP.route('/get_budget_data', methods=['POST'])
+def get_budget_data():
+    returned_data = []
+    budget_data = mongo.db.budget.find()
+    for budget in budget_data:
+        returned_data.append(budget)
+    json_response = {"IsSuccess": True, "Message": '', "ErrorType": '', "GeneralException": '',
+                     "Payload": returned_data[0]['data']}
+    return jsonify(json_response)
+
+
+@APP.route('/update_budget_data', methods=['POST'])
+def update_budget_data():
+    budgets = mongo.db.budget.find()
+    current_budgets = []
+    body_data = json.loads(request.form.get('json'))
+    for budget in budgets:
+        current_budgets.append(convert_object_id_and_date_in_string(budget))
+    current_budgets[0]['data'] = body_data['data']
+    mongo.db.budget.replace_one({'_id': ObjectId(current_budgets[0]['id'])}, current_budgets[0])
+    json_response = {"IsSuccess": True, "Message": '', "ErrorType": '', "GeneralException": '',
+                     "Payload": ''}
     return jsonify(json_response)
 
 

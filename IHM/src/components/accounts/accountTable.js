@@ -43,7 +43,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort} = props;
+  const {classes, order, orderBy, onRequestSort} = props;
   const createSortHandler = property => event => {
     onRequestSort(event, property);
   };
@@ -97,7 +97,7 @@ EnhancedTableHead.propTypes = {
 
 
 const styles = theme => ({
-  main: {padding:'8px'},
+  main: {padding: '8px'},
   reason: {
     maxWidth: '300px',
   },
@@ -154,7 +154,7 @@ class AccountTable extends Component {
           {stableSort(this.props.currentAccountData, getSorting(order, orderBy))
             .map((row, index) => {
               const isItemSelected = this.isSelected(row.name);
-              const labelId = `enhanced-table-checkbox-${index}`;
+              // const labelId = `enhanced-table-checkbox-${index}`;
 
               return (
                 <TableRow
@@ -172,7 +172,7 @@ class AccountTable extends Component {
                   {/*    inputProps={{'aria-labelledby': labelId}}*/}
                   {/*  />*/}
                   {/*</TableCell>*/}
-                  <TableCell align="right">{new Date(row.date*1000).toLocaleDateString()}</TableCell>
+                  <TableCell align="right">{new Date(row.date * 1000).toLocaleDateString()}</TableCell>
                   <TableCell align="left" className={classes.reason}>{row.reason}</TableCell>
                   <TableCell align="right">{row.credit === '' ? '' : Number(row.credit).toFixed(2)}</TableCell>
                   <TableCell align="right">{row.debit === '' ? '' : Number(row.debit).toFixed(2)}</TableCell>

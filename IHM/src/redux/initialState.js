@@ -18,6 +18,7 @@ export function getBudgetInitialState() {
   return {
     creatingBudget: false,
     creatingBudgetError: '',
-    currentBudget: {}
+    currentBudget: [],
+    savingBudget:false,
   }
 }

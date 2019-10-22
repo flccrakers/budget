@@ -13,6 +13,7 @@ import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {fetchAccountList} from "../../redux/actions/import-export-actions";
 import {withSnackbar} from "notistack";
+import {getBudget} from "../../redux/actions/budget-actions";
 // import MeetingRoom from "../../styles/svg-icons/meeting-room";
 
 
@@ -98,7 +99,7 @@ class Home extends Component {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button style={styles.cardButton} onClick={this.uploadData}>Go toIMPORT EXPORT</Button>
+              <Button style={styles.cardButton}>Go toIMPORT EXPORT</Button>
             </CardActions>
           </Card>
           <Card style={styles.card} onClick={this.gotToAccount}>
@@ -114,7 +115,7 @@ class Home extends Component {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button style={styles.cardButton} onClick={this.gotToAccount}>Go to ACCOUNT</Button>
+              <Button style={styles.cardButton}>Go to ACCOUNT</Button>
             </CardActions>
           </Card>
           <Card style={styles.card} onClick={this.gotToBudget}>
@@ -130,7 +131,7 @@ class Home extends Component {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button style={styles.cardButton} onClick={this.gotToBudget}>Go to BUDGET</Button>
+              <Button style={styles.cardButton} >Go to BUDGET</Button>
             </CardActions>
           </Card>
           {/*<Card style={styles.card} onClick={this.goToOmada}>*/}
@@ -206,15 +207,17 @@ class Home extends Component {
   uploadData = () => {
     // this.props.dispatch(fetchModuleData());
     this.props.dispatch(fetchAccountList(this.props.enqueueSnackbar));
-    console.log("Should upload data");
     this.props.history.push('/upload-data');
   };
 
   gotToAccount = () => {
+    this.props.dispatch(fetchAccountList(this.props.enqueueSnackbar));
     this.props.history.push('/accounts');
   };
 
-  gotToBudget = ()=>{
+  gotToBudget = () => {
+
+    this.props.dispatch(getBudget(this.props.enqueueSnackbar));
     this.props.history.push('/budgets')
   }
 

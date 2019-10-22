@@ -13,9 +13,13 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
-import AddIcon from '@material-ui/icons/AddOutlined'
+import SaveIcon from '@material-ui/icons/Save'
 import DeletIcon from '@material-ui/icons/DeleteForever'
-import {Typography} from "@material-ui/core";
+import {Select, Typography} from "@material-ui/core";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
 // import MeetingRoom from "../../styles/svg-icons/meeting-room";
 
 
@@ -81,11 +85,18 @@ class UploadData extends Component {
     this.state = {
       open: false,
       selectedName: '',
-      budgetItems: [],
-      itemToAdd: ''
+      budgetItems: props.currentBudget,
+      itemToAdd: '',
+      shouldSave: false,
     }
   }
 
+  componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS): void {
+    if (prevProps.currentBudget !== this.props.currentBudget) {
+      console.log("Budget has change");
+      this.setState({budgetItems: this.props.currentBudget})
+    }
+  }
 
   render() {
     return (
@@ -161,7 +172,7 @@ class UploadData extends Component {
   getBudgetDetails() {
     const {classes} = this.props;
     return <div className={classes.budgetDetails}>
-      <div>
+      <div style={{display: 'flex', alignItems: 'center'}}>
         <TextField
           value={this.state.itemToAdd}
           variant={"outlined"}
@@ -172,20 +183,44 @@ class UploadData extends Component {
             }
           }}
           label={'Item to add'}/>
-        <IconButton className={classes.button} aria-label="add" onClick={this.addItem}>
-          <AddIcon color={"secondary"}/>
+        <IconButton className={classes.button} aria-label="add" onClick={this.saveItemListToDB}
+                    disabled={this.state.shouldSave === false}>
+          <SaveIcon color={this.state.shouldSave === true ? "secondary" : "action"}/>
         </IconButton>
+        {this.getSolde()}
       </div>
       {this.createBudgetList()}
     </div>
   }
 
+  getSolde() {
+    let remain = 0;
+    this.state.budgetItems.forEach(item => {
+      if (item.type === 'credit') {
+        remain += item.value || 0;
+      } else {
+        remain -= item.value || 0
+      }
+    })
+    return <Typography variant={"h5"}>Remain {remain} euros</Typography>
+  }
+
+  updateShouldSave(value) {
+    this.setState({shouldSave: value});
+  }
+
+  saveItemListToDB = event => {
+    this.props.dispatch(budgetActions.saveBudgetData(this.state.budgetItems, this.props.enqueueSnackbar));
+    this.updateShouldSave(false);
+  };
+
   addItem = event => {
     let currentList = this.state.budgetItems;
     let name = this.state.itemToAdd;
-    currentList.push({item: name.charAt(0).toUpperCase() + name.slice(1).toLowerCase(), value: ''});
-    this.setState({budgetItems: currentList, itemToAdd: ''});
+    currentList.push({item: name.charAt(0).toUpperCase() + name.slice(1).toLowerCase(), value: '', type: 'debit'});
+    this.setState({budgetItems: currentList, itemToAdd: '', shouldSave: true});
   };
+
   updateItemToAdd = event => {
     this.setState({itemToAdd: event.target.value})
   };
@@ -193,37 +228,78 @@ class UploadData extends Component {
   createBudgetList() {
     const {classes} = this.props;
     return (
-      <div style={{display: 'flex', flexWrap: 'wrap', marginTop: '15px'}}>
-        <table>
-          <tbody>
-          {this.state.budgetItems.map((item, index) => {
-            return <tr key={'budget_item_' + index}>
-              <td>
-                <IconButton className={classes.button} aria-label="delete" onClick={(event) => {
-                  this.deleteItem(index)
-                }}
-                            color={'secondary'}>
-                  <DeletIcon/>
-                </IconButton>
-              </td>
-              <td>
-                <Typography variant={"h5"} style={{margin: '15px'}}>
-                  {item.item}
-                </Typography>
-              </td>
-              <td>
-                <TextField variant={"outlined"} label={item.item + ' value'} value={item.value}/>
-              </td>
-            </tr>
-          })}
-          </tbody>
-        </table>
+      <div style={{display: 'flex', flexWrap: 'wrap', marginTop: '15px', flex: '1 1 auto', overflowY: 'auto'}}>
+        <form>
+          <table>
+            <tbody>
+            {this.state.budgetItems.map((item, index) => {
+              return <tr key={'budget_item_' + index}>
+                <td>
+                  <IconButton className={classes.button} aria-label="delete" onClick={(event) => {
+                    this.deleteItem(index)
+                  }}
+                              color={'secondary'}>
+                    <DeletIcon/>
+                  </IconButton>
+                </td>
+                <td>
+                  <Typography variant={"h5"} style={{margin: '15px'}}>
+                    {item.item}
+                  </Typography>
+                </td>
+                <td>
+                  <TextField variant={"outlined"} label={item.item + ' value'} value={item.value} onChange={(event) => {
+                    this.updateItem(event.target.value, index)
+                  }}/>
+                </td>
+                <td>
+
+                  <FormControl variant={"outlined"} style={{width:'100px', marginLeft:'15px'}}>
+                    <InputLabel
+                      style={{backgroundColor:"white", padding:'0 8px'}}
+                      htmlFor="outlined-type-simple">
+                      Type
+                    </InputLabel>
+                    <Select
+                      variant={"outlined"}
+                      value={item.type}
+                      onChange={(event) => {
+                        this.updateItemType(event.target.value, index)
+                      }}
+                      input={<OutlinedInput/>}
+                      inputProps={{
+                        name: 'type',
+                        id: 'outlined-type-simple',
+                      }}>
+                      <MenuItem value={'credit'}>credit</MenuItem>
+                      <MenuItem value={'debit'}>debit</MenuItem>
+                    </Select>
+                  </FormControl>
+
+                </td>
+              </tr>
+            })}
+            </tbody>
+          </table>
+        </form>
       </div>);
+  }
+
+  updateItemType(value, index) {
+    let newArray = this.state.budgetItems.slice();
+    newArray[index]['type'] = value;
+    this.setState({budgetItems: newArray, shouldSave: true});
+  }
+
+  updateItem(value, index) {
+    let newArray = this.state.budgetItems.slice();
+    newArray[index]['value'] = value;
+    this.setState({budgetItems: newArray, shouldSave: true});
   }
 
   deleteItem(index) {
     let newArray = this.state.budgetItems.slice();
-    newArray.splice(index,1);
+    newArray.splice(index, 1);
     if (index > -1) {
       this.setState({budgetItems: newArray})
     }
@@ -232,5 +308,5 @@ class UploadData extends Component {
 
 const exportedUploadData = withRouter(withStyles(styles)(withSnackbar(UploadData)));
 export default connect(store => {
-  return {};
+  return {savingBudget: store.budgets.savingBudget, currentBudget: store.budgets.currentBudget};
 })(exportedUploadData);
