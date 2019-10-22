@@ -8,10 +8,12 @@ import Button from "@material-ui/core/Button";
 import {Divider} from "@material-ui/core";
 import CloudUpload from '@material-ui/icons/CloudUpload'
 import Money from '@material-ui/icons/AttachMoney'
+import BudgetIcon from '@material-ui/icons/AccountBalance'
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {fetchAccountList} from "../../redux/actions/import-export-actions";
 import {withSnackbar} from "notistack";
+import {getBudget} from "../../redux/actions/budget-actions";
 // import MeetingRoom from "../../styles/svg-icons/meeting-room";
 
 
@@ -97,7 +99,7 @@ class Home extends Component {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button style={styles.cardButton} onClick={this.uploadData}>Go toIMPORT EXPORT</Button>
+              <Button style={styles.cardButton}>Go toIMPORT EXPORT</Button>
             </CardActions>
           </Card>
           <Card style={styles.card} onClick={this.gotToAccount}>
@@ -113,7 +115,23 @@ class Home extends Component {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button style={styles.cardButton} onClick={this.uploadData}>Go to ACCOUNT</Button>
+              <Button style={styles.cardButton}>Go to ACCOUNT</Button>
+            </CardActions>
+          </Card>
+          <Card style={styles.card} onClick={this.gotToBudget}>
+            <CardContent style={styles.content}>
+              <div style={styles.cardTitle}>
+                <BudgetIcon style={{color: '#177792', marginLeft: '8px', width: '50px', height: '50px'}}/>
+                <br/>
+                <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>{'BUDGETS'}</span>
+              </div>
+              <Divider style={styles.divider}/>
+              <Typography component="p">
+                {'Define your budget'}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button style={styles.cardButton} >Go to BUDGET</Button>
             </CardActions>
           </Card>
           {/*<Card style={styles.card} onClick={this.goToOmada}>*/}
@@ -189,13 +207,19 @@ class Home extends Component {
   uploadData = () => {
     // this.props.dispatch(fetchModuleData());
     this.props.dispatch(fetchAccountList(this.props.enqueueSnackbar));
-    console.log("Should upload data");
     this.props.history.push('/upload-data');
   };
 
   gotToAccount = () => {
+    this.props.dispatch(fetchAccountList(this.props.enqueueSnackbar));
     this.props.history.push('/accounts');
   };
+
+  gotToBudget = () => {
+
+    this.props.dispatch(getBudget(this.props.enqueueSnackbar));
+    this.props.history.push('/budgets')
+  }
 
 
 }

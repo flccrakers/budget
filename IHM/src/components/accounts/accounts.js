@@ -7,6 +7,8 @@ import {withStyles} from '@material-ui/core/styles';
 import {withSnackbar} from "notistack";
 import {CircularProgress, Select} from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
+import {getAccountData} from "../../redux/actions/account-actions";
+import AccountTable from "./accountTable";
 
 
 const cardWidth = 200;
@@ -68,8 +70,8 @@ const styles = theme => ({
   tabContent: {
     display: 'flex',
     flex: '1 1 auto',
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
     overflowY: 'auto',
 
   },
@@ -82,7 +84,7 @@ const styles = theme => ({
     display: 'flex',
     flex: '0 0 auto',
     padding: '15px',
-    alignItems:'center'
+    alignItems: 'center'
   }
 });
 
@@ -91,8 +93,9 @@ class Accounts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: 0,
+      selectedTab: 1,
       selectedAccount: 0,
+      selectedYear: new Date().getFullYear(),
     }
   }
 
@@ -119,7 +122,7 @@ class Accounts extends Component {
             <Select variant={"outlined"}
                     value={this.state.selectedAccount}
                     onChange={this.handleChangeAccount}
-                    style={{marginRight:'15px'}}
+                    style={{marginRight: '15px'}}
             >
               {accounts.map((account, index) => (
                 <MenuItem
@@ -135,38 +138,67 @@ class Accounts extends Component {
               ))}
             </Select>
             }
-            Select account
-            Select Year
+            {this.getYearSelect()}
           </div>
           <Tabs value={this.state.selectedTab} onChange={this.handleChangeTab} aria-label="simple tabs example"
                 className={classes.tab}>
-            <Tab label="January" id={1}/>
-            <Tab label="February" id={2}/>
-            <Tab label="Mach" id={3}/>
-            <Tab label="April" id={4}/>
-            <Tab label="May" id={5}/>
-            <Tab label="June" id={6}/>
-            <Tab label="July" id={7}/>
-            <Tab label="August" id={8}/>
-            <Tab label="September" id={9}/>
-            <Tab label="October" id={10}/>
-            <Tab label="November" id={11}/>
-            <Tab label="December" id={12}/>
+            <Tab label="January" id={1} value={1}/>
+            <Tab label="February" id={2} value={2}/>
+            <Tab label="Mach" id={3} value={3}/>
+            <Tab label="April" id={4} value={4}/>
+            <Tab label="May" id={5} value={5}/>
+            <Tab label="June" id={6} value={6}/>
+            <Tab label="July" id={7} value={7}/>
+            <Tab label="August" id={8} value={8}/>
+            <Tab label="September" id={9} value={9}/>
+            <Tab label="October" id={10} value={10}/>
+            <Tab label="November" id={11} value={11}/>
+            <Tab label="December" id={12} value={12}/>
           </Tabs>
           <div className={classes.tabContent}>
-            {'Content for tab ' + this.state.selectedTab}
+            <AccountTable/>
+            {/*{'Content for tab ' + this.state.selectedTab}*/}
           </div>
         </div>
       </div>
     );
   }
 
-  handleChangeAccount = event => {
-    this.setState({selectedAccount: event.target.value})
+  getYearSelect() {
+    let currentYear = new Date().getFullYear(), yearTable = [];
+    for (let i = currentYear; i > currentYear - 30; i--) {
+      yearTable.push(i);
+    }
+
+    return (
+      <Select
+        variant={"outlined"}
+        value={this.state.selectedYear}
+        onChange={this.handleChangeSelectYear}
+        style={{marginRight: '15px'}}>
+        {yearTable.map(year => (
+          <MenuItem
+            key={year}
+            value={year}
+          >
+            <div>{year}</div>
+          </MenuItem>
+        ))}
+
+      </Select>
+    );
   }
+
+  handleChangeSelectYear = event => {
+    this.setState({selectedYear: event.target.value});
+  };
+  handleChangeAccount = event => {
+    this.setState({selectedAccount: event.target.value});
+  };
   handleChangeTab = (event, newValue) => {
     console.log(newValue);
-    this.setState({selectedTab: newValue})
+    this.setState({selectedTab: newValue});
+    this.props.dispatch(getAccountData(this.state.selectedAccount, this.state.selectedYear, newValue));
   }
 }
 
