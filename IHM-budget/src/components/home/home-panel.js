@@ -14,6 +14,7 @@ import {withRouter} from "react-router-dom";
 import {fetchAccountList} from "../../redux/actions/import-export-actions";
 import {withSnackbar} from "notistack";
 import {getBudget} from "../../redux/actions/budget-actions";
+import Category from "@material-ui/icons/Category";
 // import MeetingRoom from "../../styles/svg-icons/meeting-room";
 
 
@@ -134,69 +135,23 @@ class Home extends Component {
               <Button style={styles.cardButton} >Go to BUDGET</Button>
             </CardActions>
           </Card>
-          {/*<Card style={styles.card} onClick={this.goToOmada}>*/}
-          {/*  <CardContent style={styles.content}>*/}
-          {/*    <div style={styles.cardTitle}>*/}
-          {/*      <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>{'OMADA'}</span>*/}
-          {/*    </div>*/}
-          {/*    <Divider style={styles.divider}/>*/}
-          {/*    <Typography component="p">*/}
-          {/*      {'Access to the whole data of NovAliX. Import data and make reports'}*/}
-          {/*    </Typography>*/}
-          {/*  </CardContent>*/}
-          {/*  <CardActions>*/}
-          {/*    <Button style={styles.cardButton} onClick={this.goToOmada}>Go to OMADA</Button>*/}
-          {/*  </CardActions>*/}
-          {/*</Card>*/}
-          {/*<Card style={styles.card} onClick={this.goToPeople}>*/}
-          {/*  <CardContent style={styles.content}>*/}
-          {/*    <div style={styles.cardTitle}>*/}
-          {/*      <People style={{color: '#177792', width: '50px', height: '50px'}}/>*/}
-          {/*      <br/>*/}
-          {/*      <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>PEOPLE</span>*/}
-          {/*    </div>*/}
-          {/*    <Divider style={styles.divider}/>*/}
-          {/*    <Typography component="p">*/}
-          {/*      {'Request for New User Account / or Account Extension'}*/}
-          {/*    </Typography>*/}
-          {/*  </CardContent>*/}
-          {/*  <CardActions>*/}
-          {/*    <Button style={styles.cardButton} onClick={this.goToPeople}>Go to PEOPLE</Button>*/}
-          {/*  </CardActions>*/}
-          {/*</Card>*/}
-          {/*<Card style={styles.card} onClick={this.goToMaintenance}>*/}
-          {/*  <CardContent style={styles.content}>*/}
-          {/*    <div style={styles.cardTitle}>*/}
-          {/*      <Build style={{color: '#177792', width: '50px', height: '50px'}}/>*/}
-          {/*      <br/>*/}
-          {/*      <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px', textAlign: 'center'}}>MAINTENANCE MANAGEMENT</span>*/}
-          {/*    </div>*/}
-          {/*    <Divider style={styles.divider}/>*/}
-          {/*    <Typography component="p">*/}
-          {/*      {'Request for New User Account / or Account Extension'}*/}
-          {/*    </Typography>*/}
-          {/*  </CardContent>*/}
-          {/*  <CardActions>*/}
-          {/*    <Button style={styles.cardButton} onClick={this.goToMaintenance}>got to*/}
-          {/*      MAINTENANCE</Button>*/}
-          {/*  </CardActions>*/}
-          {/*</Card>*/}
-          {/*<Card style={styles.card} onClick={this.goToSignature}>*/}
-          {/*  <CardContent style={styles.content}>*/}
-          {/*    <div style={styles.cardTitle}>*/}
-          {/*      <Gesture style={{color: '#177792', width: '50px', height: '50px'}}/>*/}
-          {/*      <br/>*/}
-          {/*      <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>GENERATE SIGNATURE</span>*/}
-          {/*    </div>*/}
-          {/*    <Divider style={styles.divider}/>*/}
-          {/*    <Typography component="p">*/}
-          {/*      {"Generate your signature, in accordance with the NovAliX's graphic charter"}*/}
-          {/*    </Typography>*/}
-          {/*  </CardContent>*/}
-          {/*  <CardActions>*/}
-          {/*    <Button style={styles.cardButton} onClick={this.goToSignature}>Go to SIGNATURE</Button>*/}
-          {/*  </CardActions>*/}
-          {/*</Card>*/}
+          <Card style={styles.card} onClick={this.gotToCategory}>
+            <CardContent style={styles.content}>
+              <div style={styles.cardTitle}>
+                <Category style={{color: '#177792', marginLeft: '8px', width: '50px', height: '50px'}}/>
+                <br/>
+                <span style={{color: '#177792', fontWeight: 'bold', marginLeft: '1px'}}>{'EXPANSE CATEGORY'}</span>
+              </div>
+              <Divider style={styles.divider}/>
+              <Typography component="p">
+                {'Manage the expanse categories'}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button style={styles.cardButton} >Go to BUDGET</Button>
+            </CardActions>
+          </Card>
+
 
         </div>
 
@@ -216,9 +171,12 @@ class Home extends Component {
   };
 
   gotToBudget = () => {
-
     this.props.dispatch(getBudget(this.props.enqueueSnackbar));
     this.props.history.push('/budgets')
+  };
+  gotToCategory = () => {
+    this.props.dispatch(getBudget(this.props.enqueueSnackbar));
+    this.props.history.push('/expanse-categories')
   }
 
 

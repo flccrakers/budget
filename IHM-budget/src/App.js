@@ -29,12 +29,13 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div style={{flexGrow: 1, display: 'flex'}}>
+        <div style={{flexGrow: 1, display: 'flex', overflow:'hidden'}}>
           <Switch>
             <Route exact path='/' component={Home}/>
             <Route exact path='/upload-data' component={Home}/>
             <Route exact path='/accounts' component={Home}/>
             <Route exact path='/budgets' component={Home}/>
+            <Route exact path='/expanse-categories' component={Home}/>
           </Switch>
         </div>
       </Router>

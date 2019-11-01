@@ -39,6 +39,7 @@ const styles = theme => ({
     // justifyContent: 'center',
     // alignItems: 'center',
     // flexWrap: 'wrap',
+    overflowY: 'hidden',
     flexDirection: 'column'
   },
   bottomPart: {
@@ -75,15 +76,16 @@ const styles = theme => ({
     flex: '1 1 auto',
     marginTop: '15px',
     flexDirection: 'column',
+    overflowY: "auto",
   },
   summaryLine: {
     display: "flex", flex: '1 1 auto', justifyContent: 'space-between'
   },
-  green:{
-    color:'green'
+  green: {
+    color: 'green'
   },
-  red:{
-    color:'red'
+  red: {
+    color: 'red'
   }
 });
 

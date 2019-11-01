@@ -6,6 +6,7 @@ import HomePanel from "./home/home-panel";
 import UploadData from "./importExport/upload-data";
 import Accounts from "./accounts/accounts";
 import Budgets from "./budget/budgets"
+import Categories from "./categories/categories"
 import {withRouter} from "react-router-dom";
 
 
@@ -66,6 +67,9 @@ class Home extends Component {
       }
       case '/budgets':{
         return <Budgets/>
+      }
+      case '/expanse-categories':{
+        return <Categories/>
       }
       // case '/omada': {
       //   return allowance.includes('omada') === true ? <Omada/> : <NotAllowed/>
