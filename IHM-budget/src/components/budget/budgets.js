@@ -20,7 +20,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
-// import MeetingRoom from "../../styles/svg-icons/meeting-room";
+import Divider from "@material-ui/core/Divider";
+import classNames from "classnames";
 
 
 const cardWidth = 200;
@@ -74,6 +75,15 @@ const styles = theme => ({
     flex: '1 1 auto',
     marginTop: '15px',
     flexDirection: 'column',
+  },
+  summaryLine: {
+    display: "flex", flex: '1 1 auto', justifyContent: 'space-between'
+  },
+  green:{
+    color:'green'
+  },
+  red:{
+    color:'red'
   }
 });
 
@@ -186,22 +196,39 @@ class UploadData extends Component {
                     disabled={this.state.shouldSave === false}>
           <SaveIcon color={this.state.shouldSave === true ? "secondary" : "action"}/>
         </IconButton>
-        {this.getSolde()}
+        {this.getBalance()}
       </div>
       {this.createBudgetList()}
     </div>
   }
 
-  getSolde() {
-    let remain = 0;
+  getBalance() {
+    const {classes} = this.props;
+    let remain = 0, income = 0, outcome = 0;
     this.state.budgetItems.forEach(item => {
       if (item.type === 'credit') {
         remain += item.value || 0;
+        income += Number(item.value) || 0;
       } else {
-        remain -= item.value || 0
+        remain -= item.value || 0;
+        outcome += Number(item.value) || 0
       }
-    })
-    return <Typography variant={"h5"}>Remain {remain} euros</Typography>
+    });
+    return <div style={{display: 'flex', flexDirection: 'column', width: '300px', marginLeft: '80px'}}>
+      <div className={classNames(classes.summaryLine, classes.green)}>
+        <Typography variant={"h5"}>Income</Typography>
+        <Typography variant={"h5"}>{income} €</Typography>
+      </div>
+      <div className={classNames(classes.summaryLine, classes.red)}>
+        <Typography variant={"h5"}>Outcome</Typography>
+        <Typography variant={"h5"}>{outcome} €</Typography>
+      </div>
+      <Divider style={{backgroundColor: 'black'}}/>
+      <div className={classes.summaryLine}>
+        <Typography variant={"h5"}>Remain</Typography>
+        <Typography variant={"h5"} style={{justifySelf: 'end'}}>{remain} €</Typography>
+      </div>
+    </div>
   }
 
   updateShouldSave(value) {
@@ -253,9 +280,9 @@ class UploadData extends Component {
                 </td>
                 <td>
 
-                  <FormControl variant={"outlined"} style={{width:'100px', marginLeft:'15px'}}>
+                  <FormControl variant={"outlined"} style={{width: '100px', marginLeft: '15px'}}>
                     <InputLabel
-                      style={{backgroundColor:"white", padding:'0 8px'}}
+                      style={{backgroundColor: "white", padding: '0 8px'}}
                       htmlFor="outlined-type-simple">
                       Type
                     </InputLabel>
