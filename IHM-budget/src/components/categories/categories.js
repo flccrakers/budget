@@ -67,6 +67,7 @@ class Categories extends Component {
                 />
               </div>)
           }
+          return null;
         })}
 
       </div>
@@ -81,11 +82,15 @@ class Categories extends Component {
     let budgetItems = this.state.budgetItems.slice();
     budgetItems.forEach((itemObject, index, table) => {
       if (itemObject.item === actionMeta.name) {
-        newValue.forEach((valueObject, index, newValueTable) => {
-          if (valueObject.hasOwnProperty('__isNew__') === true) {
-            newValueTable[index] = {label: valueObject.label, value: valueObject.value}
-          }
-        });
+        if(newValue === null){
+          newValue = []
+        }else {
+          newValue.forEach((valueObject, index, newValueTable) => {
+            if (valueObject.hasOwnProperty('__isNew__') === true) {
+              newValueTable[index] = {label: valueObject.label, value: valueObject.value}
+            }
+          });
+        }
         table[index].categorieValues = newValue;
       }
     });

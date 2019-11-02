@@ -10,6 +10,14 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import PropTypes from 'prop-types';
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
+import classNames from "classnames"
+import {Dialog, DialogActions, DialogContent, Select} from "@material-ui/core";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import Button from "@material-ui/core/Button";
+import MenuItem from "@material-ui/core/MenuItem";
+import * as budgetActions from "../../redux/actions/budget-actions";
+import {getBudget} from "../../redux/actions/budget-actions";
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -38,6 +46,7 @@ function getSorting(order, orderBy) {
 const headCells = [
   {id: 'date', numeric: true, disablePadding: false, label: 'Date'},
   {id: 'reason', numeric: false, disablePadding: false, label: 'Operation'},
+  {id: 'category', numeric: false, disablePadding: false, label: 'Category'},
   {id: 'credit', numeric: true, disablePadding: false, label: 'Credit'},
   {id: 'debit', numeric: true, disablePadding: false, label: 'Debit'},
 ];
@@ -51,14 +60,6 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        {/*<TableCell padding="checkbox">*/}
-        {/*<Checkbox*/}
-        {/*  indeterminate={numSelected > 0 && numSelected < rowCount}*/}
-        {/*  checked={numSelected === rowCount}*/}
-        {/*  onChange={onSelectAllClick}*/}
-        {/*  inputProps={{'aria-label': 'select all desserts'}}*/}
-        {/*/>*/}
-        {/*</TableCell>*/}
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
@@ -111,7 +112,17 @@ const styles = theme => ({
     position: 'absolute',
     top: 20,
     width: 1,
+  },
+  green: {
+    color: 'green',
+  },
+  red: {
+    color: 'red'
+  },
+  clickable: {
+    cursor: 'pointer'
   }
+
 });
 
 
@@ -121,12 +132,16 @@ class AccountTable extends Component {
     order: 'asc',
     orderBy: 'date',
     selected: [],
+    dialogOpen: false,
+    currentIndex: 0,
+    currentSelectedCategoryIndex: 0,
   };
 
   render() {
     const {classes} = this.props;
     return <div className={classes.main}>
       {this.getContent()}
+      {this.getDialog()}
     </div>;
   }
 
@@ -158,7 +173,7 @@ class AccountTable extends Component {
               return (
                 <TableRow
                   hover
-                  onClick={event => this.handleClick(event, row.name)}
+                  // onClick={event => this.handleClick(event, row.name)}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
@@ -167,6 +182,8 @@ class AccountTable extends Component {
                 >
                   <TableCell align="right">{new Date(row.date * 1000).toLocaleDateString()}</TableCell>
                   <TableCell align="left" className={classes.reason}>{row.reason}</TableCell>
+                  <TableCell align="left" className={classNames(classes.reason, classes.clickable)}
+                  >{this.getCategory(row.reason, index)}</TableCell>
                   <TableCell align="right">{row.credit === '' ? '' : Number(row.credit).toFixed(2)}</TableCell>
                   <TableCell align="right">{row.debit === '' ? '' : Number(row.debit).toFixed(2)}</TableCell>
                 </TableRow>
@@ -178,7 +195,101 @@ class AccountTable extends Component {
 
   }
 
+  addCategory = event => {
+    // const {order, orderBy} = this.state;
+    // let data = stableSort(this.props.currentAccountData, getSorting(order, orderBy));
+    // console.log("should add category for ", data[event.target.id]);
+    this.setState({dialogOpen: true, currentIndex: event.target.id});
+
+  };
+
+  getCategory(reason, index) {
+    const {classes} = this.props;
+    let currentClass = classes.green;
+    let category = 'UNKNOWN';
+    let data = this.props.currentBudget.filter(element => {
+      if (element.categorieValues === undefined) return false;
+      let categoriesFilter = element.categorieValues.filter(elementCat => {
+        if (elementCat.label === reason) {
+        }
+        return elementCat.label === reason;
+      });
+      return categoriesFilter.length > 0;
+    });
+
+    if (data.length === 1) {
+      category = data[0].item.toUpperCase();
+    }
+    if (category === 'UNKNOWN') {
+      currentClass = classes.red
+    }
+    return <span className={currentClass} onClick={this.addCategory} id={index}>{category}</span>
+  }
+
+  getDialog() {
+    const {order, orderBy} = this.state;
+    let data = stableSort(this.props.currentAccountData, getSorting(order, orderBy));
+    let titleReason = '';
+    if (data[this.state.currentIndex] !== undefined) {
+      titleReason = data[this.state.currentIndex].reason;
+    }
+    return (
+      <Dialog open={this.state.dialogOpen} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Create a budget</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Select a category for :<br/> {titleReason}
+          </DialogContentText>
+          <Select
+            value={this.state.currentSelectedCategoryIndex}
+            onChange={this.updateSelectedCategoryIndex}
+          >
+            {this.props.currentBudget.map((budgetItem, index) => {
+              return <MenuItem value={index} key={'item_' + index}>{budgetItem.item}</MenuItem>
+            })}
+          </Select>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={this.handleAddItem} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  updateSelectedCategoryIndex = event => {
+    this.setState({currentSelectedCategoryIndex: event.target.value});
+  };
+  handleClose = event => {
+    this.setState({dialogOpen: false})
+  };
+
+  handleAddItem = event => {
+    const {order, orderBy} = this.state;
+    let data = stableSort(this.props.currentAccountData, getSorting(order, orderBy));
+    let reason = data[this.state.currentIndex].reason;
+    let budgetItems = this.props.currentBudget.slice();
+    console.log(budgetItems, this.state.currentSelectedCategoryIndex);
+    let isAlreadyIn = budgetItems[this.state.currentSelectedCategoryIndex].categorieValues.filter(element => {
+      return element.value === reason;
+    }).length > 0;
+    if (isAlreadyIn === false) {
+      budgetItems[this.state.currentSelectedCategoryIndex].categorieValues.push({label: reason, value: reason});
+      this.props.dispatch(budgetActions.saveBudgetData(budgetItems, this.props.enqueueSnackbar, true));
+      this.handleClose(event);
+      this.props.dispatch(getBudget(this.props.enqueueSnackbar));
+    }
+
+
+  };
+
+
   isSelected = name => this.state.selected.indexOf(name) !== -1;
+
   handleRequestSort = (event, property) => {
     const {orderBy, order} = this.state;
     console.log(property);
@@ -210,5 +321,6 @@ const exportedAccountTable = withRouter(withStyles(styles)(withSnackbar(AccountT
 export default connect(store => {
   return {
     currentAccountData: store.account.currentAccountData,
+    currentBudget: store.budgets.currentBudget
   };
 })(exportedAccountTable);

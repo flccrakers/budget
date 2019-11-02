@@ -167,6 +167,7 @@ class Home extends Component {
 
   gotToAccount = () => {
     this.props.dispatch(fetchAccountList(this.props.enqueueSnackbar));
+    this.props.dispatch(getBudget(this.props.enqueueSnackbar));
     this.props.history.push('/accounts');
   };
 

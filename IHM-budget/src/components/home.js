@@ -71,24 +71,7 @@ class Home extends Component {
       case '/expanse-categories':{
         return <Categories/>
       }
-      // case '/omada': {
-      //   return allowance.includes('omada') === true ? <Omada/> : <NotAllowed/>
-      // }
-      // case '/signature': {
-      //   return allowance.includes('signature') === true ? <Signature/> : <NotAllowed/>
-      // }
-      // case '/people': {
-      //   return allowance.includes('people') === true ? <People/> : <NotAllowed/>
-      // }
-      // case '/maintenance': {
-      //   return allowance.includes('maintenance') === true ? <Maintenance/> : <NotAllowed/>
-      // }
-      // case '/meeting-rooms/batA-petite': {
-      //   return <MeetingRooms room={'batA-petite'}/>
-      // }
-      // case '/meeting-rooms': {
-      //   return allowance.includes('meeting-rooms') === true ? <MeetingRooms/> : <NotAllowed/>
-      // }
+
       default:
         return (<HomePanel/>)
     }

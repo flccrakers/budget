@@ -196,7 +196,6 @@ class Accounts extends Component {
     this.setState({selectedAccount: event.target.value});
   };
   handleChangeTab = (event, newValue) => {
-    console.log(newValue);
     this.setState({selectedTab: newValue});
     this.props.dispatch(getAccountData(this.state.selectedAccount, this.state.selectedYear, newValue));
   }

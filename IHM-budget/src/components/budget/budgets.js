@@ -245,7 +245,12 @@ class UploadData extends Component {
   addItem = event => {
     let currentList = this.state.budgetItems;
     let name = this.state.itemToAdd;
-    currentList.push({item: name.charAt(0).toUpperCase() + name.slice(1).toLowerCase(), value: '', type: 'debit'});
+    currentList.push({
+      item: name.charAt(0).toUpperCase() + name.slice(1).toLowerCase(),
+      value: '',
+      type: 'debit',
+      categorieValues: []
+    });
     this.setState({budgetItems: currentList, itemToAdd: '', shouldSave: true});
   };
 
