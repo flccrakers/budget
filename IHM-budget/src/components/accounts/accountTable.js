@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import classNames from "classnames"
-import {Dialog, DialogActions, DialogContent, Select} from "@material-ui/core";
+import {Dialog, DialogActions, DialogContent, Select, TextField} from "@material-ui/core";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import Button from "@material-ui/core/Button";
@@ -50,6 +50,7 @@ const headCells = [
   {id: 'credit', numeric: true, disablePadding: false, label: 'Credit'},
   {id: 'debit', numeric: true, disablePadding: false, label: 'Debit'},
 ];
+
 
 function EnhancedTableHead(props) {
   const {classes, order, orderBy, onRequestSort} = props;
@@ -98,7 +99,12 @@ EnhancedTableHead.propTypes = {
 
 
 const styles = theme => ({
-  main: {padding: '8px'},
+  main: {
+    padding: '8px',
+    display: 'flex',
+    flex: '1 1 auto',
+    overflowY: 'auto',
+  },
   reason: {
     maxWidth: '300px',
   },
@@ -121,6 +127,9 @@ const styles = theme => ({
   },
   clickable: {
     cursor: 'pointer'
+  },
+  table: {
+    height: '100%'
   }
 
 });
@@ -135,11 +144,17 @@ class AccountTable extends Component {
     dialogOpen: false,
     currentIndex: 0,
     currentSelectedCategoryIndex: 0,
+    currentCategoryValue: ''
   };
 
   render() {
     const {classes} = this.props;
-    return <div className={classes.main}>
+    let middleDiv = document.getElementById('middle-div');
+    let maxHeight = 500;
+    if (middleDiv !== null){
+      maxHeight = middleDiv.clientHeight-150;
+    }
+    return <div className={classes.main} style={{maxHeight: maxHeight + 'px'}}>
       {this.getContent()}
       {this.getDialog()}
     </div>;
@@ -196,12 +211,38 @@ class AccountTable extends Component {
   }
 
   addCategory = event => {
-    // const {order, orderBy} = this.state;
-    // let data = stableSort(this.props.currentAccountData, getSorting(order, orderBy));
-    // console.log("should add category for ", data[event.target.id]);
-    this.setState({dialogOpen: true, currentIndex: event.target.id});
+    console.log(event.target.id);
+    this.setState({
+      dialogOpen: true,
+      currentIndex: event.target.id,
+      currentCategoryValue: this.generateCategoryValueFromReason(event.target.id)
+    });
 
   };
+
+  generateCategoryValueFromReason(index) {
+    const {order, orderBy} = this.state;
+    let data = stableSort(this.props.currentAccountData, getSorting(order, orderBy));
+    let currentCategory = '', reCarte, reVirementPermanant;
+    reCarte = /FACTURE CARTE DU \d+([a-zA-Z_\s\.\*]*)\d+XXXXXXXX\d+.+/;
+    reVirementPermanant = /VIREMENT FAVEUR TIERS VR. PERMANENT([a-zA-Z_\s]+).+/;
+    if (data[index] !== undefined) {
+      currentCategory = data[index].reason;
+      console.log(index, data[index], currentCategory);
+      let currentResult = reCarte.exec(currentCategory);
+      if (currentResult !== null) currentCategory = currentResult[1];
+
+      currentResult = reVirementPermanant.exec(currentCategory);
+      if (currentResult !== null) currentCategory = currentResult[1];
+
+      console.log(currentCategory.split("  "));
+      currentCategory = currentCategory.split("  ")[0];
+    }
+
+    console.log("currentCategory to return: " + currentCategory.trim());
+    return currentCategory.trim();
+
+  }
 
   getCategory(reason, index) {
     const {classes} = this.props;
@@ -212,7 +253,7 @@ class AccountTable extends Component {
       let categoriesFilter = element.categorieValues.filter(elementCat => {
         if (elementCat.label === reason) {
         }
-        return elementCat.label === reason;
+        return reason.includes(elementCat.label);
       });
       return categoriesFilter.length > 0;
     });
@@ -240,6 +281,10 @@ class AccountTable extends Component {
           <DialogContentText>
             Select a category for :<br/> {titleReason}
           </DialogContentText>
+          <TextField value={this.state.currentCategoryValue} onChange={this.handleUpdateCurrentCategoryValue}
+                     fullWidth/>
+
+
           <Select
             value={this.state.currentSelectedCategoryIndex}
             onChange={this.updateSelectedCategoryIndex}
@@ -261,6 +306,9 @@ class AccountTable extends Component {
     );
   }
 
+  handleUpdateCurrentCategoryValue = event => {
+    this.setState({currentCategoryValue: event.target.value});
+  };
   updateSelectedCategoryIndex = event => {
     this.setState({currentSelectedCategoryIndex: event.target.value});
   };
@@ -269,16 +317,17 @@ class AccountTable extends Component {
   };
 
   handleAddItem = event => {
-    const {order, orderBy} = this.state;
-    let data = stableSort(this.props.currentAccountData, getSorting(order, orderBy));
-    let reason = data[this.state.currentIndex].reason;
+    let currentCategory = this.state.currentCategoryValue;
     let budgetItems = this.props.currentBudget.slice();
     console.log(budgetItems, this.state.currentSelectedCategoryIndex);
     let isAlreadyIn = budgetItems[this.state.currentSelectedCategoryIndex].categorieValues.filter(element => {
-      return element.value === reason;
+      return element.value === currentCategory;
     }).length > 0;
     if (isAlreadyIn === false) {
-      budgetItems[this.state.currentSelectedCategoryIndex].categorieValues.push({label: reason, value: reason});
+      budgetItems[this.state.currentSelectedCategoryIndex].categorieValues.push({
+        label: currentCategory,
+        value: currentCategory
+      });
       this.props.dispatch(budgetActions.saveBudgetData(budgetItems, this.props.enqueueSnackbar, true));
       this.handleClose(event);
       this.props.dispatch(getBudget(this.props.enqueueSnackbar));

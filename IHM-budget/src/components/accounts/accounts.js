@@ -70,12 +70,13 @@ const styles = theme => ({
   tabContent: {
     display: 'flex',
     flex: '1 1 auto',
-    // justifyContent: 'center',
-    // alignItems: 'center',
     overflowY: 'auto',
 
   },
-  tab: {maxHeight: '48px'},
+  tab: {
+    maxHeight: '48px',
+
+  },
   tabContainer: {
     display: 'flex',
     maxHeight: '48px'
@@ -87,6 +88,7 @@ const styles = theme => ({
     alignItems: 'center'
   }
 });
+
 
 class Accounts extends Component {
 
@@ -102,7 +104,7 @@ class Accounts extends Component {
 
   render() {
     return (
-      <div style={{display: 'flex', flexGrow: 1}}>
+      <div style={{display: 'flex', flex:'1 1 auto'}}>
         {this.getContent()}
       </div>
     )
@@ -111,6 +113,7 @@ class Accounts extends Component {
   getContent() {
     const {classes} = this.props;
     let accounts = [{'name': '- Select an account -', 'id': '0'}].concat(this.props.accounts);
+
     return (
       <div className={classes.main}>
         <div className={classes.upperPart}>
@@ -140,8 +143,12 @@ class Accounts extends Component {
             }
             {this.getYearSelect()}
           </div>
-          <Tabs value={this.state.selectedTab} onChange={this.handleChangeTab} aria-label="simple tabs example"
-                className={classes.tab}>
+          <Tabs
+            value={this.state.selectedTab}
+            onChange={this.handleChangeTab}
+            aria-label="simple tabs example"
+            className={classes.tab}
+          >
             <Tab label="January" id={1} value={1}/>
             <Tab label="February" id={2} value={2}/>
             <Tab label="Mach" id={3} value={3}/>
@@ -155,10 +162,10 @@ class Accounts extends Component {
             <Tab label="November" id={11} value={11}/>
             <Tab label="December" id={12} value={12}/>
           </Tabs>
-          <div className={classes.tabContent}>
+          {/*<div className={classes.tabContent}>*/}
             <AccountTable/>
             {/*{'Content for tab ' + this.state.selectedTab}*/}
-          </div>
+          {/*</div>*/}
         </div>
       </div>
     );

@@ -209,13 +209,14 @@ class UploadData extends Component {
     let remain = 0, income = 0, outcome = 0;
     this.state.budgetItems.forEach(item => {
       if (item.type === 'credit') {
-        remain += item.value || 0;
+        // remain += item.value || 0;
         income += Number(item.value) || 0;
       } else {
-        remain -= item.value || 0;
+        // remain -= item.value || 0;
         outcome += Number(item.value) || 0
       }
     });
+    remain = income - outcome;
     return <div style={{display: 'flex', flexDirection: 'column', width: '300px', marginLeft: '80px'}}>
       <div className={classNames(classes.summaryLine, classes.green)}>
         <Typography variant={"h5"}>Income</Typography>

@@ -23,11 +23,20 @@ export function saveBudgetData(budgetList, enqueueSnackbar, isCategory=false) {
   }
 }
 
+function compare( a, b ) {
+  if ( a.item < b.item ){
+    return -1;
+  }
+  if ( a.item > b.item ){
+    return 1;
+  }
+  return 0;
+}
 export function getBudget(enqueueSnackbar) {
   return function (dispatch) {
     budgetsService.getBudgetDataFromDB().then(result => {
       enqueueSnackbar('Budget loaded', {variant: 'success', autoHideDuration: 4000});
-      dispatch({type: 'FETCH_BUDGET_DATA', payload: result})
+      dispatch({type: 'FETCH_BUDGET_DATA', payload: result.sort(compare)})
     });
   }
 }

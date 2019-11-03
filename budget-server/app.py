@@ -163,6 +163,7 @@ def get_account_data():
 def get_budget_data():
     returned_data = []
     budget_data = mongo.db.budget.find()
+
     for budget in budget_data:
         returned_data.append(budget)
     json_response = {"IsSuccess": True, "Message": '', "ErrorType": '', "GeneralException": '',

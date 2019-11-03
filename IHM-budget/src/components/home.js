@@ -19,8 +19,8 @@ const styles = {
     overflow: 'hidden',
   },
   middle: {
-    flexGrow: 1,
-    overflow: 'auto',
+    flex:'1 1 auto',
+    // overflow: 'auto',
     minHeight: '2em',
     display: 'flex',
   },
