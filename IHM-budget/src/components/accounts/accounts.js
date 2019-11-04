@@ -9,6 +9,7 @@ import {CircularProgress, Select} from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 import {getAccountData} from "../../redux/actions/account-actions";
 import AccountTable from "./accountTable";
+import MonthStatistics from "./montStatistics";
 
 
 const cardWidth = 200;
@@ -162,10 +163,11 @@ class Accounts extends Component {
             <Tab label="November" id={11} value={11}/>
             <Tab label="December" id={12} value={12}/>
           </Tabs>
-          {/*<div className={classes.tabContent}>*/}
+          <div className={classes.tabContent}>
             <AccountTable/>
+            <MonthStatistics month={this.state.selectedTab}/>
             {/*{'Content for tab ' + this.state.selectedTab}*/}
-          {/*</div>*/}
+          </div>
         </div>
       </div>
     );

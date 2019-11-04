@@ -81,7 +81,7 @@ class HeaderFactory extends Component {
           <div style={{...styles.grow, justifyContent: 'center', display: 'flex'}}>
             {/*<img src={logoNegative} alt={''} width={30} height={30} style={{marginRight: '8px'}}/>*/}
             <Typography variant="h6" color="inherit">
-              BUDGET
+              BUDGET©
             </Typography>
           </div>
           <div>

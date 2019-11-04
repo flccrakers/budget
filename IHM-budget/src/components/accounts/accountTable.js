@@ -18,6 +18,7 @@ import Button from "@material-ui/core/Button";
 import MenuItem from "@material-ui/core/MenuItem";
 import * as budgetActions from "../../redux/actions/budget-actions";
 import {getBudget} from "../../redux/actions/budget-actions";
+import {getCategory} from "../budgetUtils";
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -163,6 +164,7 @@ class AccountTable extends Component {
   getContent() {
     const {classes} = this.props;
     const {dense, order, orderBy, selected} = this.state;
+
     return (
       <Table
         className={classes.table}
@@ -184,7 +186,8 @@ class AccountTable extends Component {
             .map((row, index) => {
               const isItemSelected = this.isSelected(row.name);
               // const labelId = `enhanced-table-checkbox-${index}`;
-
+              let currentClass = classes.green;
+              let category = getCategory(row.reason, index, this.props.currentBudget);
               return (
                 <TableRow
                   hover
@@ -198,7 +201,7 @@ class AccountTable extends Component {
                   <TableCell align="right">{new Date(row.date * 1000).toLocaleDateString()}</TableCell>
                   <TableCell align="left" className={classes.reason}>{row.reason}</TableCell>
                   <TableCell align="left" className={classNames(classes.reason, classes.clickable)}
-                  >{this.getCategory(row.reason, index)}</TableCell>
+                  ><span className={currentClass} onClick={this.addCategory} id={index}>{category}</span></TableCell>
                   <TableCell align="right">{row.credit === '' ? '' : Number(row.credit).toFixed(2)}</TableCell>
                   <TableCell align="right">{row.debit === '' ? '' : Number(row.debit).toFixed(2)}</TableCell>
                 </TableRow>
@@ -244,28 +247,7 @@ class AccountTable extends Component {
 
   }
 
-  getCategory(reason, index) {
-    const {classes} = this.props;
-    let currentClass = classes.green;
-    let category = 'UNKNOWN';
-    let data = this.props.currentBudget.filter(element => {
-      if (element.categorieValues === undefined) return false;
-      let categoriesFilter = element.categorieValues.filter(elementCat => {
-        if (elementCat.label === reason) {
-        }
-        return reason.includes(elementCat.label);
-      });
-      return categoriesFilter.length > 0;
-    });
 
-    if (data.length === 1) {
-      category = data[0].item.toUpperCase();
-    }
-    if (category === 'UNKNOWN') {
-      currentClass = classes.red
-    }
-    return <span className={currentClass} onClick={this.addCategory} id={index}>{category}</span>
-  }
 
   getDialog() {
     const {order, orderBy} = this.state;
