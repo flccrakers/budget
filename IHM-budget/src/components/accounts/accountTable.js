@@ -10,6 +10,15 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import PropTypes from 'prop-types';
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
+import classNames from "classnames"
+import {Dialog, DialogActions, DialogContent, Select, TextField} from "@material-ui/core";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import Button from "@material-ui/core/Button";
+import MenuItem from "@material-ui/core/MenuItem";
+import * as budgetActions from "../../redux/actions/budget-actions";
+import {getBudget} from "../../redux/actions/budget-actions";
+import {getCategory} from "../budgetUtils";
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -38,9 +47,11 @@ function getSorting(order, orderBy) {
 const headCells = [
   {id: 'date', numeric: true, disablePadding: false, label: 'Date'},
   {id: 'reason', numeric: false, disablePadding: false, label: 'Operation'},
+  {id: 'category', numeric: false, disablePadding: false, label: 'Category'},
   {id: 'credit', numeric: true, disablePadding: false, label: 'Credit'},
   {id: 'debit', numeric: true, disablePadding: false, label: 'Debit'},
 ];
+
 
 function EnhancedTableHead(props) {
   const {classes, order, orderBy, onRequestSort} = props;
@@ -51,14 +62,6 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow>
-        {/*<TableCell padding="checkbox">*/}
-        {/*<Checkbox*/}
-        {/*  indeterminate={numSelected > 0 && numSelected < rowCount}*/}
-        {/*  checked={numSelected === rowCount}*/}
-        {/*  onChange={onSelectAllClick}*/}
-        {/*  inputProps={{'aria-label': 'select all desserts'}}*/}
-        {/*/>*/}
-        {/*</TableCell>*/}
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
@@ -97,7 +100,12 @@ EnhancedTableHead.propTypes = {
 
 
 const styles = theme => ({
-  main: {padding: '8px'},
+  main: {
+    padding: '8px',
+    display: 'flex',
+    flex: '1 1 auto',
+    overflowY: 'auto',
+  },
   reason: {
     maxWidth: '300px',
   },
@@ -111,7 +119,20 @@ const styles = theme => ({
     position: 'absolute',
     top: 20,
     width: 1,
+  },
+  green: {
+    color: 'green',
+  },
+  red: {
+    color: 'red'
+  },
+  clickable: {
+    cursor: 'pointer'
+  },
+  table: {
+    height: '100%'
   }
+
 });
 
 
@@ -121,19 +142,39 @@ class AccountTable extends Component {
     order: 'asc',
     orderBy: 'date',
     selected: [],
+    dialogOpen: false,
+    currentIndex: 0,
+    currentSelectedCategoryIndex: 0,
+    currentCategoryValue: ''
   };
 
   render() {
     const {classes} = this.props;
-    return <div className={classes.main}>
+    let middleDiv = document.getElementById('middle-div');
+    let maxHeight = 500;
+    if (middleDiv !== null) {
+      maxHeight = middleDiv.clientHeight - 150;
+    }
+    return <div className={classes.main} style={{maxHeight: maxHeight + 'px'}}>
       {this.getContent()}
+      {this.getDialog()}
     </div>;
+  }
+
+  getDataWithCategory() {
+    const{order, orderBy} = this.state;
+    let currentData = this.props.currentAccountData.slice();
+    currentData.forEach((element, index, table) => {
+      table[index]['category'] = getCategory(element.reason, index, this.props.currentBudget);
+    });
+    return currentData;
   }
 
   getContent() {
     const {classes} = this.props;
     const {dense, order, orderBy, selected} = this.state;
-    console.log(orderBy);
+    let currentData = this.getDataWithCategory();
+
     return (
       <Table
         className={classes.table}
@@ -151,29 +192,28 @@ class AccountTable extends Component {
           rowCount={this.props.currentAccountData.length}
         />
         <TableBody>
-          {stableSort(this.props.currentAccountData, getSorting(order, orderBy))
+          {stableSort(currentData, getSorting(order, orderBy))
             .map((row, index) => {
               const isItemSelected = this.isSelected(row.name);
               // const labelId = `enhanced-table-checkbox-${index}`;
-
+              let currentClass = classes.green;
+              // let category = getCategory(row.reason, index, this.props.currentBudget);
+              if (row.category.toUpperCase() === 'UNKNOWN') currentClass = classes.red;
               return (
                 <TableRow
                   hover
-                  onClick={event => this.handleClick(event, row.name)}
+                  // onClick={event => this.handleClick(event, row.name)}
                   role="checkbox"
                   aria-checked={isItemSelected}
                   tabIndex={-1}
                   key={row.date + "_" + index}
                   selected={isItemSelected}
                 >
-                  {/*<TableCell padding="checkbox">*/}
-                  {/*  <Checkbox*/}
-                  {/*    checked={isItemSelected}*/}
-                  {/*    inputProps={{'aria-labelledby': labelId}}*/}
-                  {/*  />*/}
-                  {/*</TableCell>*/}
                   <TableCell align="right">{new Date(row.date * 1000).toLocaleDateString()}</TableCell>
                   <TableCell align="left" className={classes.reason}>{row.reason}</TableCell>
+                  <TableCell align="left" className={classNames(classes.reason, classes.clickable)}>
+                    <span className={currentClass} onClick={this.addCategory} id={index}>{row.category}</span>
+                  </TableCell>
                   <TableCell align="right">{row.credit === '' ? '' : Number(row.credit).toFixed(2)}</TableCell>
                   <TableCell align="right">{row.debit === '' ? '' : Number(row.debit).toFixed(2)}</TableCell>
                 </TableRow>
@@ -185,7 +225,106 @@ class AccountTable extends Component {
 
   }
 
+  addCategory = event => {
+    console.log(event.target.id);
+    this.setState({
+      dialogOpen: true,
+      currentIndex: event.target.id,
+      currentCategoryValue: this.generateCategoryValueFromReason(event.target.id)
+    });
+
+  };
+
+  generateCategoryValueFromReason(index) {
+    const {order, orderBy} = this.state;
+    let data = stableSort(this.props.currentAccountData, getSorting(order, orderBy));
+    let currentCategory = '', reCarte, reVirementPermanant;
+    reCarte = /FACTURE CARTE DU \d+([a-zA-Z_\s.*]*)\d+XXXXXXXX\d+.+/;
+    reVirementPermanant = /VIREMENT FAVEUR TIERS VR. PERMANENT([a-zA-Z_\s]+).+/;
+    if (data[index] !== undefined) {
+      currentCategory = data[index].reason;
+      let currentResult = reCarte.exec(currentCategory);
+      if (currentResult !== null) currentCategory = currentResult[1];
+      currentResult = reVirementPermanant.exec(currentCategory);
+      if (currentResult !== null) currentCategory = currentResult[1];
+      currentCategory = currentCategory.split("  ")[0];
+    }
+    return currentCategory.trim();
+  }
+
+
+  getDialog() {
+    const {order, orderBy} = this.state;
+    let data = stableSort(this.props.currentAccountData, getSorting(order, orderBy));
+    let titleReason = '';
+    if (data[this.state.currentIndex] !== undefined) {
+      titleReason = data[this.state.currentIndex].reason;
+    }
+    return (
+      <Dialog open={this.state.dialogOpen} onClose={this.handleClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">Create a budget</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Select a category for :<br/> {titleReason}
+          </DialogContentText>
+          <TextField value={this.state.currentCategoryValue} onChange={this.handleUpdateCurrentCategoryValue}
+                     fullWidth/>
+
+
+          <Select
+            value={this.state.currentSelectedCategoryIndex}
+            onChange={this.updateSelectedCategoryIndex}
+          >
+            {this.props.currentBudget.map((budgetItem, index) => {
+              return <MenuItem value={index} key={'item_' + index}>{budgetItem.item}</MenuItem>
+            })}
+          </Select>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={this.handleAddItem} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  handleUpdateCurrentCategoryValue = event => {
+    this.setState({currentCategoryValue: event.target.value});
+  };
+  updateSelectedCategoryIndex = event => {
+    this.setState({currentSelectedCategoryIndex: event.target.value});
+  };
+  handleClose = event => {
+    this.setState({dialogOpen: false})
+  };
+
+  handleAddItem = event => {
+    let currentCategory = this.state.currentCategoryValue;
+    let budgetItems = this.props.currentBudget.slice();
+    console.log(budgetItems, this.state.currentSelectedCategoryIndex);
+    let isAlreadyIn = budgetItems[this.state.currentSelectedCategoryIndex].categorieValues.filter(element => {
+      return element.value === currentCategory;
+    }).length > 0;
+    if (isAlreadyIn === false) {
+      budgetItems[this.state.currentSelectedCategoryIndex].categorieValues.push({
+        label: currentCategory,
+        value: currentCategory
+      });
+      this.props.dispatch(budgetActions.saveBudgetData(budgetItems, this.props.enqueueSnackbar, true));
+      this.handleClose(event);
+      this.props.dispatch(getBudget(this.props.enqueueSnackbar));
+    }
+
+
+  };
+
+
   isSelected = name => this.state.selected.indexOf(name) !== -1;
+
   handleRequestSort = (event, property) => {
     const {orderBy, order} = this.state;
     console.log(property);
@@ -217,5 +356,6 @@ const exportedAccountTable = withRouter(withStyles(styles)(withSnackbar(AccountT
 export default connect(store => {
   return {
     currentAccountData: store.account.currentAccountData,
+    currentBudget: store.budgets.currentBudget
   };
 })(exportedAccountTable);

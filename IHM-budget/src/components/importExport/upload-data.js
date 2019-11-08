@@ -154,7 +154,6 @@ class UploadData extends Component {
     this.resourceUploadInputRef.click();
   };
   handleResourceInputFile = event => {
-    console.log(event.target.files[0].name);
     this.setState({selectedFile: event.target.files[0].name});
     if (this.state.selectedAccount === 0) {
       this.props.enqueueSnackbar('Select an account', {variant: 'error', autoHideDuration: 4000})

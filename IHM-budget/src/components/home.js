@@ -6,6 +6,7 @@ import HomePanel from "./home/home-panel";
 import UploadData from "./importExport/upload-data";
 import Accounts from "./accounts/accounts";
 import Budgets from "./budget/budgets"
+import Categories from "./categories/categories"
 import {withRouter} from "react-router-dom";
 
 
@@ -18,8 +19,8 @@ const styles = {
     overflow: 'hidden',
   },
   middle: {
-    flexGrow: 1,
-    overflow: 'auto',
+    flex:'1 1 auto',
+    // overflow: 'auto',
     minHeight: '2em',
     display: 'flex',
   },
@@ -57,9 +58,6 @@ class Home extends Component {
   }
 
   getMiddleContent() {
-
-    // let allowance = this.props.user.user.allowance;
-    console.log(this.props.history.location.pathname);
     switch (this.props.history.location.pathname) {
       case '/upload-data': {
          return <UploadData/>
@@ -70,24 +68,10 @@ class Home extends Component {
       case '/budgets':{
         return <Budgets/>
       }
-      // case '/omada': {
-      //   return allowance.includes('omada') === true ? <Omada/> : <NotAllowed/>
-      // }
-      // case '/signature': {
-      //   return allowance.includes('signature') === true ? <Signature/> : <NotAllowed/>
-      // }
-      // case '/people': {
-      //   return allowance.includes('people') === true ? <People/> : <NotAllowed/>
-      // }
-      // case '/maintenance': {
-      //   return allowance.includes('maintenance') === true ? <Maintenance/> : <NotAllowed/>
-      // }
-      // case '/meeting-rooms/batA-petite': {
-      //   return <MeetingRooms room={'batA-petite'}/>
-      // }
-      // case '/meeting-rooms': {
-      //   return allowance.includes('meeting-rooms') === true ? <MeetingRooms/> : <NotAllowed/>
-      // }
+      case '/expanse-categories':{
+        return <Categories/>
+      }
+
       default:
         return (<HomePanel/>)
     }

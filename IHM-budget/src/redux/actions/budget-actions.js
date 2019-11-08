@@ -5,12 +5,16 @@ export function createBudget(name, enqueueSnackbar) {
   }
 }
 
-export function saveBudgetData(budgetList, enqueueSnackbar) {
+export function saveBudgetData(budgetList, enqueueSnackbar, isCategory=false) {
   return function (dispatch) {
     dispatch({type: 'SAVING_BUDGET_DATA'});
     budgetsService.saveBudgetDataInDB(budgetList).then(result => {
       console.log(result);
-      enqueueSnackbar('Budget saved', {variant: 'success', autoHideDuration: 4000});
+      if(isCategory === false) {
+        enqueueSnackbar('Budget saved', {variant: 'success', autoHideDuration: 4000});
+      }else{
+        enqueueSnackbar('Categories saved', {variant: 'success', autoHideDuration: 4000});
+      }
       dispatch({type: 'SAVING_BUDGET_DATA_DONE'});
 
     }).catch(error => {
@@ -19,11 +23,20 @@ export function saveBudgetData(budgetList, enqueueSnackbar) {
   }
 }
 
+function compare( a, b ) {
+  if ( a.item < b.item ){
+    return -1;
+  }
+  if ( a.item > b.item ){
+    return 1;
+  }
+  return 0;
+}
 export function getBudget(enqueueSnackbar) {
   return function (dispatch) {
     budgetsService.getBudgetDataFromDB().then(result => {
       enqueueSnackbar('Budget loaded', {variant: 'success', autoHideDuration: 4000});
-      dispatch({type: 'FETCH_BUDGET_DATA', payload: result})
+      dispatch({type: 'FETCH_BUDGET_DATA', payload: result.sort(compare)})
     });
   }
 }
