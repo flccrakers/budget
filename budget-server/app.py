@@ -142,14 +142,15 @@ def get_account_data():
     account_id = body_data['accountId']
     year = body_data['year']
     month = body_data['month']
-    print(account_id, year, month)
     account_data = mongo.db.accounts.find_one({"_id": ObjectId(account_id)})
-    print(account_data)
     returned_data = []
     if account_data is not None:
         for data in account_data['data']:
             current_date = datetime.datetime.strptime(data['date'], "%Y-%m-%d").date()
-            if current_date.year == year and current_date.month == month:
+            if year is None and month is None:
+                data['date'] = time.mktime(current_date.timetuple())
+                returned_data.append(data)
+            elif current_date.year == year and current_date.month == month:
                 data['date'] = time.mktime(current_date.timetuple())
                 returned_data.append(data)
 

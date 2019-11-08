@@ -152,8 +152,8 @@ class AccountTable extends Component {
     const {classes} = this.props;
     let middleDiv = document.getElementById('middle-div');
     let maxHeight = 500;
-    if (middleDiv !== null){
-      maxHeight = middleDiv.clientHeight-150;
+    if (middleDiv !== null) {
+      maxHeight = middleDiv.clientHeight - 150;
     }
     return <div className={classes.main} style={{maxHeight: maxHeight + 'px'}}>
       {this.getContent()}
@@ -161,9 +161,19 @@ class AccountTable extends Component {
     </div>;
   }
 
+  getDataWithCategory() {
+    const{order, orderBy} = this.state;
+    let currentData = this.props.currentAccountData.slice();
+    currentData.forEach((element, index, table) => {
+      table[index]['category'] = getCategory(element.reason, index, this.props.currentBudget);
+    });
+    return currentData;
+  }
+
   getContent() {
     const {classes} = this.props;
     const {dense, order, orderBy, selected} = this.state;
+    let currentData = this.getDataWithCategory();
 
     return (
       <Table
@@ -182,12 +192,13 @@ class AccountTable extends Component {
           rowCount={this.props.currentAccountData.length}
         />
         <TableBody>
-          {stableSort(this.props.currentAccountData, getSorting(order, orderBy))
+          {stableSort(currentData, getSorting(order, orderBy))
             .map((row, index) => {
               const isItemSelected = this.isSelected(row.name);
               // const labelId = `enhanced-table-checkbox-${index}`;
               let currentClass = classes.green;
-              let category = getCategory(row.reason, index, this.props.currentBudget);
+              // let category = getCategory(row.reason, index, this.props.currentBudget);
+              if (row.category.toUpperCase() === 'UNKNOWN') currentClass = classes.red;
               return (
                 <TableRow
                   hover
@@ -200,8 +211,9 @@ class AccountTable extends Component {
                 >
                   <TableCell align="right">{new Date(row.date * 1000).toLocaleDateString()}</TableCell>
                   <TableCell align="left" className={classes.reason}>{row.reason}</TableCell>
-                  <TableCell align="left" className={classNames(classes.reason, classes.clickable)}
-                  ><span className={currentClass} onClick={this.addCategory} id={index}>{category}</span></TableCell>
+                  <TableCell align="left" className={classNames(classes.reason, classes.clickable)}>
+                    <span className={currentClass} onClick={this.addCategory} id={index}>{row.category}</span>
+                  </TableCell>
                   <TableCell align="right">{row.credit === '' ? '' : Number(row.credit).toFixed(2)}</TableCell>
                   <TableCell align="right">{row.debit === '' ? '' : Number(row.debit).toFixed(2)}</TableCell>
                 </TableRow>
@@ -227,26 +239,18 @@ class AccountTable extends Component {
     const {order, orderBy} = this.state;
     let data = stableSort(this.props.currentAccountData, getSorting(order, orderBy));
     let currentCategory = '', reCarte, reVirementPermanant;
-    reCarte = /FACTURE CARTE DU \d+([a-zA-Z_\s\.\*]*)\d+XXXXXXXX\d+.+/;
+    reCarte = /FACTURE CARTE DU \d+([a-zA-Z_\s.*]*)\d+XXXXXXXX\d+.+/;
     reVirementPermanant = /VIREMENT FAVEUR TIERS VR. PERMANENT([a-zA-Z_\s]+).+/;
     if (data[index] !== undefined) {
       currentCategory = data[index].reason;
-      console.log(index, data[index], currentCategory);
       let currentResult = reCarte.exec(currentCategory);
       if (currentResult !== null) currentCategory = currentResult[1];
-
       currentResult = reVirementPermanant.exec(currentCategory);
       if (currentResult !== null) currentCategory = currentResult[1];
-
-      console.log(currentCategory.split("  "));
       currentCategory = currentCategory.split("  ")[0];
     }
-
-    console.log("currentCategory to return: " + currentCategory.trim());
     return currentCategory.trim();
-
   }
-
 
 
   getDialog() {

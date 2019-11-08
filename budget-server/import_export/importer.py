@@ -15,7 +15,7 @@ def get_json_form_xlsx_file(filename):
         if sheet.row_values(i)[0] != '':
             tuple_date = xlrd.xldate_as_tuple(int(sheet.row_values(i)[0]), wb.datemode)
             date = str(tuple_date[0]) + '-' + str(tuple_date[1]) + '-' + str(tuple_date[2])
-            reason = sheet.row_values(i)[3]
+            reason = ' '.join(sheet.row_values(i)[3].split())
             amount = sheet.row_values(i)[4]
             credit = ''
             debit = ''

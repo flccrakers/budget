@@ -9,7 +9,9 @@ import {CircularProgress, Select} from "@material-ui/core";
 import MenuItem from "@material-ui/core/MenuItem";
 import {getAccountData} from "../../redux/actions/account-actions";
 import AccountTable from "./accountTable";
-import MonthStatistics from "./montStatistics";
+import MonthStatistics from "./monthStatistics";
+import YearStatistics from "./yearStatistics";
+import Button from "@material-ui/core/Button/Button";
 
 
 const cardWidth = 200;
@@ -24,9 +26,6 @@ const styles = theme => ({
   upperPart: {
     display: 'flex',
     flex: '1 1 auto',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // flexWrap: 'wrap',
     flexDirection: 'column'
   },
   bottomPart: {
@@ -97,80 +96,113 @@ class Accounts extends Component {
     super(props);
     this.state = {
       selectedTab: 1,
-      selectedAccount: 0,
+      selectedAccount: props.accounts[0].id,
       selectedYear: new Date().getFullYear(),
+      showYearStatistic: false,
     }
   }
 
 
   render() {
     return (
-      <div style={{display: 'flex', flex:'1 1 auto'}}>
+      <div style={{display: 'flex', flex: '1 1 auto'}}>
         {this.getContent()}
       </div>
     )
   }
 
+  getYearStatisticsContent() {
+    return (<div>
+      STATISTICS
+      <YearStatistics/>
+    </div>)
+  }
+
+  getAccountContent() {
+    const {classes} = this.props;
+    return [
+      <Tabs
+        value={this.state.selectedTab}
+        onChange={this.handleChangeTab}
+        aria-label="simple tabs example"
+        className={classes.tab}
+        key={'tabs_accounts'}
+      >
+        <Tab label="January" id={1} value={1}/>
+        <Tab label="February" id={2} value={2}/>
+        <Tab label="March" id={3} value={3}/>
+        <Tab label="April" id={4} value={4}/>
+        <Tab label="May" id={5} value={5}/>
+        <Tab label="June" id={6} value={6}/>
+        <Tab label="July" id={7} value={7}/>
+        <Tab label="August" id={8} value={8}/>
+        <Tab label="September" id={9} value={9}/>
+        <Tab label="October" id={10} value={10}/>
+        <Tab label="November" id={11} value={11}/>
+        <Tab label="December" id={12} value={12}/>
+      </Tabs>,
+      <div className={classes.tabContent} key={'statistics_accounts'}>
+        <AccountTable/>
+        <MonthStatistics month={this.state.selectedTab}/>
+      </div>
+    ];
+  }
+
+  getAccountMenu() {
+    const {classes} = this.props;
+    return (
+      <div className={classes.overTab}>
+        {this.props.fetchingAccounts === true &&
+        <CircularProgress size={50} color={"secondary"}/>
+        }
+        {this.getAccountSelect()}
+        {this.getYearSelect()}
+        {this.getYearStatisticButton()}
+      </div>);
+  }
+
   getContent() {
     const {classes} = this.props;
-    let accounts = [{'name': '- Select an account -', 'id': '0'}].concat(this.props.accounts);
+
+    let content = this.state.showYearStatistic === false ? this.getAccountContent() : this.getYearStatisticsContent();
 
     return (
       <div className={classes.main}>
         <div className={classes.upperPart}>
-          <div className={classes.overTab}>
-            {this.props.fetchingAccounts === true &&
-            <CircularProgress size={50} color={"secondary"}/>
-            }
-            {this.props.fetchingAccounts === false &&
-            <Select variant={"outlined"}
-                    value={this.state.selectedAccount}
-                    onChange={this.handleChangeAccount}
-                    style={{marginRight: '15px'}}
-            >
-              {accounts.map((account, index) => (
-                <MenuItem
-                  key={account.id}
-                  value={account.id}
-                >
-                  <div>
-                    {index === 0 && <em>{account.name}</em>}
-                    {index > 0 && account.name}
-                  </div>
-
-                </MenuItem>
-              ))}
-            </Select>
-            }
-            {this.getYearSelect()}
-          </div>
-          <Tabs
-            value={this.state.selectedTab}
-            onChange={this.handleChangeTab}
-            aria-label="simple tabs example"
-            className={classes.tab}
-          >
-            <Tab label="January" id={1} value={1}/>
-            <Tab label="February" id={2} value={2}/>
-            <Tab label="Mach" id={3} value={3}/>
-            <Tab label="April" id={4} value={4}/>
-            <Tab label="May" id={5} value={5}/>
-            <Tab label="June" id={6} value={6}/>
-            <Tab label="July" id={7} value={7}/>
-            <Tab label="August" id={8} value={8}/>
-            <Tab label="September" id={9} value={9}/>
-            <Tab label="October" id={10} value={10}/>
-            <Tab label="November" id={11} value={11}/>
-            <Tab label="December" id={12} value={12}/>
-          </Tabs>
-          <div className={classes.tabContent}>
-            <AccountTable/>
-            <MonthStatistics month={this.state.selectedTab}/>
-            {/*{'Content for tab ' + this.state.selectedTab}*/}
-          </div>
+          {this.getAccountMenu()}
+          {content}
         </div>
       </div>
     );
+  }
+
+  getAccountSelect() {
+    let accounts = [{'name': '- Select an account -', 'id': '0'}].concat(this.props.accounts);
+    if (this.props.fetchingAccounts === false) {
+      return (
+
+        <Select variant={"outlined"}
+                value={this.state.selectedAccount}
+                onChange={this.handleChangeAccount}
+                style={{marginRight: '15px'}}
+        >
+          {accounts.map((account, index) => (
+            <MenuItem
+              key={account.id}
+              value={account.id}
+            >
+              <div>
+                {index === 0 && <em>{account.name}</em>}
+                {index > 0 && account.name}
+              </div>
+
+            </MenuItem>
+          ))}
+        </Select>
+
+      );
+    }
+    return null;
   }
 
   getYearSelect() {
@@ -198,12 +230,33 @@ class Accounts extends Component {
     );
   }
 
+  getYearStatisticButton() {
+    return (
+      <Button
+        variant={'contained'}
+        color={"secondary"}
+        onClick={this.handleShowHideYearStatistics}>
+        {this.state.showYearStatistic === false ? 'Show year statistics' : 'Show accounts'}
+      </Button>
+    )
+  }
+
+  handleShowHideYearStatistics = event => {
+    if (this.state.showYearStatistic === false) {
+      this.props.dispatch(getAccountData(this.state.selectedAccount, null, null));
+    } else {
+      this.props.dispatch(getAccountData(this.state.selectedAccount, this.state.selectedYear, this.state.selectedTab));
+    }
+    this.setState({showYearStatistic: !this.state.showYearStatistic});
+
+  };
   handleChangeSelectYear = event => {
     this.setState({selectedYear: event.target.value});
   };
   handleChangeAccount = event => {
     this.setState({selectedAccount: event.target.value});
   };
+
   handleChangeTab = (event, newValue) => {
     this.setState({selectedTab: newValue});
     this.props.dispatch(getAccountData(this.state.selectedAccount, this.state.selectedYear, newValue));

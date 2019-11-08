@@ -3,9 +3,8 @@ import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import {withStyles} from '@material-ui/core/styles';
 import {withSnackbar} from "notistack";
-import {Typography} from "@material-ui/core";
-import Divider from "@material-ui/core/Divider";
-import {getCategory} from "../budgetUtils";
+import {formatMoney, getCategory} from "../budgetUtils";
+import {CircularProgress} from "@material-ui/core";
 
 
 const styles = theme => ({
@@ -45,8 +44,10 @@ const styles = theme => ({
 });
 
 
-class MonthStatistic extends Component {
-  state = {};
+class YearStatistic extends Component {
+  state = {
+    loadingStatistics: false,
+  };
 
   render() {
     const {classes} = this.props;
@@ -57,21 +58,15 @@ class MonthStatistic extends Component {
   }
 
   getContent() {
-    console.log(this.props.currentAccountData);
-
     let {credit, debit} = this.getCreditDebitAmount();
     let balance = credit - debit;
 
     return (
       <div>
-        <Typography>MONTH STATISTICS</Typography>
-        <div style={{textAlign: 'right'}}>
-          <Typography>Credit: {this.formatMoney(credit, 2, '.', ' ')} €</Typography>
-          <Typography>Debit: {this.formatMoney(debit, 2, '.', ' ')} €</Typography>
-          <Divider/>
-          <Typography>Balance: {this.formatMoney(balance, 2, '.', ' ')} €</Typography>
-        </div>
-        {this.getBudgetTable()}
+        {this.state.loadingStatistics === true &&
+          <CircularProgress color={'primary'} size={150} thicness={2}/>
+        }
+        {this.state.loadingStatistics === false && this.getBudgetTable()}
       </div>
     )
   }
@@ -87,21 +82,7 @@ class MonthStatistic extends Component {
     return {credit, debit};
   }
 
-  formatMoney(amount, decimalCount = 2, decimal = ".", thousands = ",") {
-    try {
-      decimalCount = Math.abs(decimalCount);
-      decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
 
-      const negativeSign = amount < 0 ? "-" : "";
-
-      let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
-      let j = (i.length > 3) ? i.length % 3 : 0;
-
-      return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
-    } catch (error) {
-      console.error(error)
-    }
-  };
 
   getBudgetTable() {
     let currentStatistic = this.getCurrentStatistics();
@@ -114,18 +95,18 @@ class MonthStatistic extends Component {
           <th>Planned</th>
           <th>Real</th>
           <th>Conclusion</th>
-          <th>Remain</th>
+          {/*<th>Remain</th>*/}
         </tr>
         </thead>
         <tbody>
-        {currentStatistic.map(element => {
+        {currentStatistic.map((element, index) => {
           let conclusionBackground = element.conclusion === 'OK' ? 'green' : 'red';
-          return (<tr style={{textAlign: 'right'}}>
+          return (<tr style={{textAlign: 'right'}} key={'month_stat_' + index}>
             <td>{element.item}</td>
-            <td>{this.formatMoney(element.value, 0, '.', ' ')} €</td>
-            <td>{this.formatMoney(element.real, 2, '.', ' ')} €</td>
+            <td>{formatMoney(element.value, 0, '.', ' ')} €</td>
+            <td>{formatMoney(element.real, 2, '.', ' ')} €</td>
             <td style={{textAlign: 'center', backgroundColor: conclusionBackground}}>{element.conclusion}</td>
-            <td>{this.formatMoney(element.remain, 2, '.', ' ')} €</td>
+            {/*<td>{this.formatMoney(element.remain, 2, '.', ' ')} €</td>*/}
 
           </tr>);
         })}
@@ -140,7 +121,7 @@ class MonthStatistic extends Component {
       let real = this.getReal(element.item);
       // let real = element.value;
       let conclusion = real <= element.value ? 'OK' : 'WARN';
-      let remain = real>0 ? element.value - real:'NA';
+      let remain = real > 0 ? element.value - real : 'NA';
       currentStats.push({...element, real, conclusion, remain})
     });
 
@@ -150,21 +131,42 @@ class MonthStatistic extends Component {
 
   getReal(selectedCategory) {
     let real = 0;
+    let divider = this.getDivider(selectedCategory);
     this.props.currentAccountData.forEach((element, index) => {
       let category = getCategory(element.reason, index, this.props.currentBudget);
       if (category.toUpperCase() === selectedCategory.toUpperCase()) {
         let debit = element.debit || 0;
         let credit = element.credit || 0;
-        real += -credit + debit;
+        real += (-credit + debit) / divider;
       }
     });
     return real;
   }
 
+  getDivider(selectedCategory) {
+    let divider = 0, currentCategoryExist = false;
+    for (let monthId = 1; monthId <= 12; monthId++) {
+      this.props.currentAccountData.filter(element => {
+        let currentDate = new Date(element.date * 1000);
+        return currentDate.getMonth() === monthId;
+      }).forEach((element, index) => {
+        let category = getCategory(element.reason, index, this.props.currentBudget);
+        if (category.toUpperCase() === selectedCategory.toUpperCase()) {
+          currentCategoryExist = true;
+        }
+      });
+      if (currentCategoryExist === true) {
+        divider += 1;
+        currentCategoryExist = false
+      }
+    }
+    return divider;
+  }
+
 }
 
 
-const exportedAccountTable = withRouter(withStyles(styles)(withSnackbar(MonthStatistic)));
+const exportedAccountTable = withRouter(withStyles(styles)(withSnackbar(YearStatistic)));
 export default connect(store => {
   return {
     currentAccountData: store.account.currentAccountData,
