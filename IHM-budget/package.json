@@ -11,7 +11,7 @@
     "classnames": "^2.2.6",
     "cross-env": "^6.0.3",
     "localforage": "^1.7.3",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "notistack": "0.9.5",
     "prop-types": "^15.7.2",
     "react": "^16.11.0",
