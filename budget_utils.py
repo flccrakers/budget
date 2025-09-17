@@ -10,6 +10,8 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 months = ['janv', 'fev', 'mars', 'avr', 'mai', 'juin',
           'juill', 'aout', 'sept', 'oct', 'nov', 'dec']
+default_font = Font(name="Calibri", size=11)
+bold_font = Font(name="Calibri", size=11, bold=True)
 
 
 def create_new_budget(year):
@@ -54,12 +56,13 @@ def create_new_budget(year):
 
         # Write header row
         for col_idx, header in enumerate(headers, start=1):
-            ws.cell(row=1, column=col_idx, value=header)
+            cell = ws.cell(row=1, column=col_idx, value=header)
+            cell.font = bold_font
 
         # Write operation headers from column H (index 8)
         for op_idx, header in enumerate(operation_headers, start=8):
-            ws.cell(row=1, column=op_idx, value=header)
-
+            cell = ws.cell(row=1, column=op_idx, value=header)
+            cell.font = bold_font
         # Write data rows
         for row_idx, entry in enumerate(categories, start=5):
             ws.cell(row=row_idx, column=1, value=entry["code"])
@@ -117,6 +120,26 @@ def create_new_budget(year):
         ws.column_dimensions["J"].width = 80
         ws.column_dimensions["K"].width = 10
         ws.column_dimensions["L"].width = 10
+
+        # Totaux et résumé ligne 2
+        ws["C2"] = "=SUM(K2:K1000)"
+        ws["D2"] = "=SUM(L2:L1000)"
+        ws["E2"] = '=IF(C2-D2>=0,"OK","PB")'
+        ws["F2"] = "=C2-D2"
+
+        for col in ["C", "D", "E", "F"]:
+            cell = ws[f"{col}2"]
+            cell.font = bold_font
+
+        ws["E2"].alignment = Alignment(horizontal="center")
+        ws.conditional_formatting.add(
+            "E2",
+            FormulaRule(formula=['E2="OK"'], fill=green_fill, font=font_ok)
+        )
+        ws.conditional_formatting.add(
+            "E2",
+            FormulaRule(formula=['E2="PB"'], fill=red_fill, font=font_pb)
+        )
 
     # Add stats sheet
     generate_stats_sheet(wb_new, categories)
@@ -345,30 +368,30 @@ def generate_stats_sheet(wb, categories):
     for i, month in enumerate(months):
         col = i + 3
         cell = ws.cell(row=1, column=col, value=month)
-        cell.font = Font(bold=True)
+        cell.font = bold_font
         cell.alignment = Alignment(horizontal="center")
 
     # Additional headers
-    ws.cell(row=1, column=15, value="Total an").font = Font(bold=True)
+    ws.cell(row=1, column=15, value="Total an").font = bold_font
     ws.cell(row=1, column=15).alignment = Alignment(horizontal="center")
 
-    ws.cell(row=1, column=16, value="Catégorie").font = Font(bold=True)
+    ws.cell(row=1, column=16, value="Catégorie").font = bold_font
     ws.cell(row=1, column=16).alignment = Alignment(horizontal="center")
 
-    ws.cell(row=1, column=17, value="Moyenne").font = Font(bold=True)
+    ws.cell(row=1, column=17, value="Moyenne").font = bold_font
     ws.cell(row=1, column=17).alignment = Alignment(horizontal="center")
 
     # First two cells A1/A2 and B1/B2 in bold
-    ws["A1"].font = Font(bold=True)
-    ws["A2"].font = Font(bold=True)
-    ws["B1"].font = Font(bold=True)
-    ws["B2"].font = Font(bold=True)
+    ws["A1"].font = bold_font
+    ws["A2"].font = bold_font
+    ws["B1"].font = bold_font
+    ws["B2"].font = bold_font
 
     # Write rows per category
     for row_idx, entry in enumerate(categories, start=2):
-        ws.cell(row=row_idx, column=1, value=entry["code"]).font = Font(bold=True)
-        ws.cell(row=row_idx, column=2, value=entry["intitule"]).font = Font(bold=True)
-        ws.cell(row=row_idx, column=16, value=entry["intitule"]).font = Font(bold=True)
+        ws.cell(row=row_idx, column=1, value=entry["code"]).font = bold_font
+        ws.cell(row=row_idx, column=2, value=entry["intitule"]).font = bold_font
+        ws.cell(row=row_idx, column=16, value=entry["intitule"]).font = bold_font
 
         for i, month in enumerate(months):
             col = i + 3

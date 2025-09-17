@@ -15,6 +15,7 @@ def show_menu():
         print("2. Import monthly data")
         print("3. Assign category to month")
         print("4. Check missing")
+        print("5. Update budget values")
         print("0. Exit")
 
         choice = input("Select an option: ")
