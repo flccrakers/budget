@@ -1,4 +1,6 @@
 import os
+from pathlib import Path
+
 import pandas as pd
 import json
 from datetime import datetime
@@ -165,6 +167,8 @@ def import_month():
     }
 
     # Display month selection
+    print(
+        "Download your bank statement as a CSV (UTF-16, tab-separated) and name it accordingly (e.g., 'janv.csv').\nUse https://wwws.linxo.com/auth.page#Login")
     print("📅 Available months to import: " + " | ".join([f"{num}. {name}" for num, name in months_map.items()]))
     choice = input("➡️  Enter the number of the month to import: ").strip()
     selected_month = months_map.get(choice)
@@ -266,13 +270,15 @@ def assign_categories():
         return
 
     ws = wb[selected_month]
-    fill_category_codes(ws)
+    missing = fill_category_codes(ws)
+    print(f"Missing catégories: {missing}")
     wb.save(excel_filename)
     print(f"✅ Categories assigned for '{selected_month}' in '{excel_filename}'.")
 
 
 def fill_category_codes(sheet: Worksheet, refdep_path="refdep.json", start_row=2):
     # Always resolve relative to current Python script's location
+    missing = []
     current_dir = os.path.dirname(os.path.realpath(__file__))
     refdep_path = os.path.join(current_dir, "ressources", refdep_path)
     """
@@ -299,14 +305,21 @@ def fill_category_codes(sheet: Worksheet, refdep_path="refdep.json", start_row=2
     # Process each row in column J (Libellé), write code to column I
     for row in sheet.iter_rows(min_row=start_row, min_col=10, max_col=10):  # Column J
         libelle_cell = row[0]
+        is_credit = sheet.cell(row=libelle_cell.row, column=11).value is not None # Column K
         if libelle_cell.value:
             libelle_text = str(libelle_cell.value).lower()
+            found = False
             for keyword, code in keyword_to_code.items():
                 if keyword in libelle_text:
                     sheet.cell(row=libelle_cell.row, column=9, value=code)  # Column I
+                    found = True
                     break  # Stop at first match
+                # else:
+            if not found and libelle_text not in missing and not is_credit:
+                missing.append(libelle_text)
 
     print("✅ Column I (category codes) filled based on keywords in column J.")
+    return missing
 
 
 def compare_budget_categories():
@@ -320,8 +333,11 @@ def compare_budget_categories():
     Returns:
     - missing (list): List of budget categories not found in the 'intitule' fields of the JSON (case-insensitive).
     """
-    refdep_json_path = os.path.join("./ressources", "refdep.json")
-    budget_file_path = os.path.join("./ressources", "budget.xlsx")
+    dir = Path(__file__).resolve().parent
+    print(dir)
+
+    refdep_json_path = os.path.join(dir, "ressources", "refdep.json")
+    budget_file_path = os.path.join(dir, "ressources", "budget.xlsx")
     # Load the JSON file
     with open(refdep_json_path, "r", encoding="utf-8") as f:
         refdep_json = json.load(f)
